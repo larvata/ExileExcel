@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-
-namespace ExileExcel
+﻿namespace ExileExcel.Common
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+
     internal static class ReflectiveEnumerator
     {
         internal static IEnumerable<T> GetEnumerableOfType<T>(params object[] constructorArgs) where T : class

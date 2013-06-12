@@ -1,36 +1,35 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using NPOI.HSSF.UserModel;
-
-
-namespace ExileExcel
+﻿namespace ExileExcel
 {
+    using ExileExcel.Common;
+    using NPOI.SS.UserModel;
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+    using System.Reflection;
+
     public class ExcelParser
     {
         public string Description { get; set; }
 
-        public List<BaseExileData> ParseFromXLS(string filePath)
+        public List<BaseExileData> Parse(string filePath)
         {
-            HSSFWorkbook workbook;
+            IWorkbook workbook;
             using (var file = new FileStream(filePath, FileMode.Open, FileAccess.Read))
             {
-                workbook = new HSSFWorkbook(file);
+                workbook =WorkbookFactory.Create(file);
             }
-            var worksheet = (HSSFSheet) workbook.GetSheetAt(0);
+            var worksheet = workbook.GetSheetAt(0);
             var rows = worksheet.GetRowEnumerator();
 
             var matchedRawDataObject = new BaseExileData();
             var inputKeyPair = new Dictionary<int, string>();
 
-
+            
 
             // get header
             rows.MoveNext();
-            var header = (HSSFRow) rows.Current;
+            var header = (IRow) rows.Current;
             for (int i = 0; i < header.Cells.Count; i++)
             {
                 inputKeyPair.Add(i, header.Cells[i].StringCellValue);
@@ -51,7 +50,7 @@ namespace ExileExcel
             {
                 var tmpRawData = (BaseExileData) Activator.CreateInstance(matchedRawDataObject.GetType());
                 {
-                    var row = (HSSFRow) rows.Current;
+                    var row = (IRow)rows.Current;
                     foreach (var p in tmpRawData.GetNameAttributePair())
                     {
                         var index = inputKeyPair.FirstOrDefault(k => k.Value == p.Value).Key;
@@ -59,7 +58,7 @@ namespace ExileExcel
                                              .GetProperty(p.Key,
                                                           BindingFlags.NonPublic | BindingFlags.Public |
                                                           BindingFlags.Instance);
-                        var cell = (HSSFCell) row.GetCell(index);
+                        var cell = row.GetCell(index);
 
                         if (null == prop || !prop.CanWrite || null == cell) continue;
 

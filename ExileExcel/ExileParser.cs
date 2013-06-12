@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace ExileExcel
+﻿namespace ExileExcel
 {
     class ExileParser
     {
+        public void SaveExcelFile()
+        {
+            
+        }
     }
 }

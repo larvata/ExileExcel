@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-
-namespace ExileExcel
+﻿namespace ExileExcel
 {
+    using System;
+    using System.ComponentModel;
+
     [Description("RawData Base Class")]
     public class ExileDataAttribute : Attribute
     {
