@@ -6,9 +6,9 @@ using System.Reflection;
 
 namespace ExileExcel
 {
-    public class BaseExileData : IComparable<BaseExileData>
+    public class BaseExileData 
     {
-        public int Id { get; set; }
+        public int ForeignHashCode { get; set; }
 
         public string Description
         {
@@ -56,16 +56,6 @@ namespace ExileExcel
             return thisKeyPair.All(
                 inP => inputKeyPair.Any(p =>
                     p.Value.Equals(inP.Value)));
-        }
-
-        public int CompareTo(BaseExileData other)
-        {
-            if (object.ReferenceEquals(other, null))
-            {
-                return 1;
-            }
-
-            return (this.Id > other.Id ? 1 : 0);
         }
     }
 }
