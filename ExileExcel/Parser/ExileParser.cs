@@ -1,6 +1,6 @@
 ﻿namespace ExileExcel
 {
-    class ExileParser
+    public class ExileParser
     {
         public void SaveExcelFile()
         {

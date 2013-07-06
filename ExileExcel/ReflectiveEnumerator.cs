@@ -1,10 +1,12 @@
-﻿namespace ExileExcel.Common
+﻿using System.Reflection;
+
+namespace ExileExcel.Common
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
 
-    internal static class ReflectiveEnumerator
+    public static class ReflectiveEnumerator
     {
         internal static IEnumerable<T> GetEnumerableOfType<T>(params object[] constructorArgs) where T : class
         {
@@ -24,7 +26,11 @@
 
 
             // miao le ge mi de!
-            return AppDomain.CurrentDomain.GetAssemblies().SelectMany(a => a.GetTypes(), (a, type) => new {a, type}).Where(t => t.type.IsSubclassOf(typeof (T))).Select(t => t.type).Select(type => (T) Activator.CreateInstance(type, constructorArgs)).ToList();
+            return AppDomain.CurrentDomain.GetAssemblies()
+                .SelectMany(a => a.GetTypes(), (a, type) => new {a, type}).Where(t => t.type.IsSubclassOf(typeof (T)))
+                .Select(t => t.type).Select(type => (T) Activator.CreateInstance(type, constructorArgs)).ToList();
         }
+
+
     }
 }

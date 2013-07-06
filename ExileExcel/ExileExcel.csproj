@@ -41,14 +41,17 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BaseExileData.cs" />
-    <Compile Include="ExcelParser.cs" />
-    <Compile Include="ExileParser.cs" />
+    <Compile Include="Parser\ExileExcel.cs" />
+    <Compile Include="Common\ExileMatchResult.cs" />
+    <Compile Include="Attribute\ExiliableAttribute.cs" />
+    <Compile Include="Common\ParserUtilty.cs" />
+    <Compile Include="Parser\ExileExtractor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ExileDataAttribute.cs" />
-    <Compile Include="ReflectiveEnumerator.cs" />
+    <Compile Include="Attribute\ExileDataAttribute.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

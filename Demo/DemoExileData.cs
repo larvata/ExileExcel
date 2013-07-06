@@ -7,7 +7,7 @@ using ExileExcel.Attribute;
 
 namespace Demo
 {
-    [ExiliableAttribute]
+    [ExiliableAttribute("Demo class")]
     class DemoExileData
     {
         public int Id { get; set; }
