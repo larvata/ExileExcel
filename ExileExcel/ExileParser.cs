@@ -1,16 +1,15 @@
-﻿using System.Data;
-using NPOI.SS.Formula.Functions;
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using ExileExcel.Common;
+using NPOI.HSSF.UserModel;
+using NPOI.SS.UserModel;
 
 namespace ExileExcel
 {
-    using ExileExcel.Common;
-    using NPOI.SS.UserModel;
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Linq;
-    using System.Reflection;
-
     public class ExcelParser<T>
     {
 
@@ -156,16 +155,7 @@ namespace ExileExcel
 
         #endregion
 
-        public MemoryStream ExcelOutputStream(List<T> dataList,Stream stream)
-        {
-            throw new NotImplementedException();
-            //var bytes = new byte[stream.Length];
-            //ms.Read(bytes, 0, (int)ms.Length);
-            //fs.Write(bytes, 0, bytes.Length);
-            //return null;
 
-
-        }
 
     }
 }

@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using ExileExcel.Attribute;
-
-namespace ExileExcel.Common
+﻿namespace ExileExcel.Common
 {
+    using ExileExcel.Attribute;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Reflection;
+
     public static class ParserUtilty
     {
         /// <summary>
@@ -16,8 +16,33 @@ namespace ExileExcel.Common
         /// <returns></returns>
         internal static ExileMatchResult GetTypeMatched<T>(Dictionary<int, string> headerList)
         {
-            ExileMatchResult retVal = null;
-            var currentKeyPair = new Dictionary<string, string>();
+            var retVal = GetTypeMatched<T>();
+            var currentKeyPair=new Dictionary<string, string>();
+
+            if (retVal.HeaderKeyPair.Count == headerList.Count)
+            {
+                var plist = currentKeyPair.Where(p => !headerList.ContainsValue(p.Value));
+                // all matched
+                if (!plist.Any())
+                {
+                    //retVal.HeaderKeyPair = currentKeyPair;
+                    return retVal;
+                }
+                
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Aquire HeaderText--Property mapping 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        internal static ExileMatchResult GetTypeMatched<T>()
+        {
+            var retVal = new ExileMatchResult();
+            //var currentKeyPair = new Dictionary<string, string>();
 
             var properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance)
                     .Where(p => p.GetCustomAttributes(typeof(ExilePropertyAttribute), true).Any());
@@ -27,25 +52,14 @@ namespace ExileExcel.Common
             foreach (var property in properties)
             {
                 var attr = property.GetCustomAttributes(typeof(ExilePropertyAttribute), true).First() as ExilePropertyAttribute;
-                currentKeyPair.Add(property.Name, attr.HeaderText);
-            }
-            if (currentKeyPair.Count == headerList.Count)
-            {
-                var plist = currentKeyPair.Where(p => !headerList.ContainsValue(p.Value));
-                // matched
-                if (!plist.Any())
-                {
-                    retVal = (new ExileMatchResult
-                        {
-                            HeaderKeyPair = currentKeyPair,
-                            MatchedType = typeof(T)
-                        });
-                }
+                retVal.HeaderKeyPair.Add(property.Name, attr.HeaderText);
             }
 
             // aquire class description
             retVal.TypeDescription = (typeof(T).GetCustomAttributes(typeof(ExiliableAttribute), true).First() as ExiliableAttribute).Description;
 
+            // aquire type of class
+            retVal.MatchedType = typeof (T);
             return retVal;
         }
 
@@ -84,6 +98,25 @@ namespace ExileExcel.Common
             }
         }
 
+        /// <summary>
+        /// get attribute value by attribute name
+        /// </summary>
+        /// <param name="src"></param>
+        /// <param name="propName"></param>
+        /// <returns></returns>
+        public static ExilePropertyAttribute GetTypeAttribute(Type src, string propName)
+        {
+            return src.GetProperty(propName).GetCustomAttributes(typeof(ExilePropertyAttribute), true).First() as ExilePropertyAttribute;
+        }
 
+        public static object GetPropValue(object src, string propName)
+        {
+            return src.GetType().GetProperty(propName).GetValue(src, null);
+        }
+
+        public static Type GetPropType(object src, string propName)
+        {
+            return src.GetType().GetProperty(propName).PropertyType;
+        }
     }
 }

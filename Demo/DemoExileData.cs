@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using ExileExcel;
 using ExileExcel.Attribute;
+using ExileExcel.Common;
 
 namespace Demo
 {
@@ -15,9 +16,9 @@ namespace Demo
         public string Number { get; set; }
         [ExileProperty("姓名")]
         public string Name { get; set; }
-        [ExileProperty("分数")]
+        [ExileProperty("分数","",NPOIDataFormatEnum.NumberInteger)]
         public float Score { get; set; }
-        [ExileProperty("考试日期")]
+        [ExileProperty("考试日期", "YYYY/MM/DD")]
         public DateTime TestDate { get; set; }
     }
 

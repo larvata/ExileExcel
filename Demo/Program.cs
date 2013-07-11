@@ -1,11 +1,8 @@
-﻿using System;
+﻿using ExileExcel;
+using ExileExcel.Common;
+using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using ExileExcel;
-using ExileExcel.Common;
-using System.Web;
 
 namespace Demo
 {
@@ -13,12 +10,19 @@ namespace Demo
     {
         private static void Main(string[] args)
         {
-            //ExileExcel e=new ExileExcel();
-            //var exileParser = new ExileParser();
-            var excelParser = new ExcelParser<DemoExileData>();
+//            XWPFDocument doc = null;
+//            
+//            using (var fs=new FileStream(@"d:\1.doc",FileMode.Open,FileAccess.Read))
+//            {
+//                doc= new XWPFDocument(fs);
+//                    
+//            }
+//            
+//
+//            return;
 
+            var excelParser = new ExileParser<DemoExileData>();
             var list = excelParser.Parse(@"d:\1.xlsx");
-
 
             var outData = new List<DemoExileData>
             {
@@ -50,21 +54,14 @@ namespace Demo
 
 
             const string outFilePath = @"d:\out.xlsx";
-
+            var extractor = new ExileExtractor<DemoExileData>();
+           
 
             using (var fs = new FileStream(outFilePath, FileMode.Create, FileAccess.Write))
             {
-                excelParser.ExcelOutputStream(outData, fs);
+                extractor.ExcelWriteStream(outData, fs, ExtractType.Excel2007);
             }
 
-
-
-
-
-
-            //var list = ExileExcel.Common.ReflectiveEnumerator.GetTypesWithAttribute(typeof(ExiliableAttribute)).ToList();
-            //ExileExcel.ParserUtilty.GetNameAttributePair(list);
-            //parser.SaveExcelFile();
         }
     }
 }

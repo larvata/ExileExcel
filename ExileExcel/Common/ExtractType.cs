@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace ExileExcel.Parser
+namespace ExileExcel.Common
 {
-    class ExileExtractor
+    class ExtractType
     {
     }
 }
