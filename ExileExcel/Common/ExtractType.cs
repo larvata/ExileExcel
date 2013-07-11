@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace ExileExcel.Common
+﻿namespace ExileExcel.Common
 {
-    class ExtractType
+    public enum ExtractType
     {
+        Excel2003,
+        Excel2007
     }
 }

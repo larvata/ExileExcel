@@ -1,16 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using ExileExcel.Common;
-using NPOI.HSSF.UserModel;
-using NPOI.SS.UserModel;
-
-namespace ExileExcel
+﻿namespace ExileExcel
 {
-    public class ExcelParser<T>
+    using ExileExcel.Common;
+    using NPOI.SS.UserModel;
+    using System;
+    using System.Collections.Generic;
+    using System.Data;
+    using System.IO;
+    using System.Linq;
+    using System.Reflection;
+
+    public class ExileParser<T>
     {
 
         /// <summary>
