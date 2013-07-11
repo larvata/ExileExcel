@@ -77,5 +77,6 @@ Parse from XLS/XLSX files.
 Todo:
 -----------
 1. Output data to word2003/2007.
+2. Excel template support.
 
 [0]: https://github.com/tonyqus/npoi
