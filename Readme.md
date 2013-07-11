@@ -8,20 +8,21 @@ Usage:
 
 **Class Define:**
 
-Create your class with ExileAttribute to mapping property with excel file head text.
+Create your class with ExileAttribute to mapping property with excel file head text.You can define data format explicitily also.
 
     [ExiliableAttribute("Demo class")]
     class DemoExileData
     {
         public int Id { get; set; }
 
+        public int Id { get; set; }
         [ExileProperty("学号")]
         public string Number { get; set; }
         [ExileProperty("姓名")]
         public string Name { get; set; }
-        [ExileProperty("分数")]
+        [ExileProperty("分数","",NPOIDataFormatEnum.NumberInteger)]
         public float Score { get; set; }
-        [ExileProperty("考试日期")]
+        [ExileProperty("考试日期", "YYYY/MM/DD")]
         public DateTime TestDate { get; set; }
     }
 
@@ -67,9 +68,14 @@ Parse from XLS/XLSX files.
 
 2.Write objects to file
 
-    using (var fs = new FileStream(@"d:\out.xlsx";, FileMode.Create, FileAccess.Write))
+    using (var fs = new FileStream(outFilePath, FileMode.Create, FileAccess.Write))
     {
-        excelParser.ExcelOutputStream(outData, fs);
+        extractor.ExcelWriteStream(outData, fs, ExtractType.Excel2007);
     }
+
+
+Todo:
+-----------
+1. Output data to word2003/2007.
 
 [0]: https://github.com/tonyqus/npoi
