@@ -69,11 +69,11 @@
             {
                 var tmpRawData = (T)Activator.CreateInstance(typeof(T));
                 var row = (IRow) rows.Current;
-                foreach (var p in MatchedSchema.HeaderKeyPair)
+                foreach (var p in MatchedSchema.Headers)
                 {
-                    var index = inputKeyPair.FirstOrDefault(k => k.Value == p.Value).Key;
+                    var index = inputKeyPair.FirstOrDefault(k => k.Value == p.PropertyDescription).Key;
                     var prop = tmpRawData.GetType()
-                                    .GetProperty(p.Key, BindingFlags.Public |BindingFlags.Instance);
+                                    .GetProperty(p.PropertyName, BindingFlags.Public |BindingFlags.Instance);
                     var cell = row.GetCell(index);
 
                     if (null == prop || !prop.CanWrite || null == cell) continue;

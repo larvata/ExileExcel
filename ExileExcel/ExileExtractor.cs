@@ -1,4 +1,8 @@
-﻿namespace ExileExcel
+﻿using NPOI.SS.Formula.Functions;
+using NPOI.SS.Util;
+using NPOI.Util;
+
+namespace ExileExcel
 {
     using ExileExcel.Attribute;
     using ExileExcel.Common;
@@ -11,11 +15,13 @@
 
     public class ExileExtractor<T>
     {
-        private readonly Dictionary<string,ICellStyle> _cellFormatCache;
+        private readonly Dictionary<string, ICellStyle> _cellFormatCache;
         private readonly Dictionary<string, ExilePropertyAttribute> _exilePropertyAttributes;
 
-        private IWorkbook _workbook ;
+        private IWorkbook _workbook;
         private ISheet _sheet;
+
+        private SheetAttributeOverride sheetAttribute;
 
         /// <summary>
         /// Init
@@ -23,11 +29,24 @@
         public ExileExtractor()
         {
             // fill all buildin dataformat for avoid re-declare same format
-            _cellFormatCache=new Dictionary<string, ICellStyle>();
-            _exilePropertyAttributes=new Dictionary<string, ExilePropertyAttribute>();
+            _cellFormatCache = new Dictionary<string, ICellStyle>();
+            _exilePropertyAttributes = new Dictionary<string, ExilePropertyAttribute>();
+            sheetAttribute=new SheetAttributeOverride();
         }
 
-        public void ExcelWriteStream(List<T> dataList, Stream stream, ExtractType extractType)
+        public ExileExtractor(string sheetName,string titleText):this()
+        {
+            sheetAttribute.SheetName = sheetName;
+            sheetAttribute.TitleText = titleText;
+        } 
+
+        private struct SheetAttributeOverride
+        {
+            public string SheetName;
+            public string TitleText;
+        }
+
+        public void ExcelWriteStream(List<T> dataList, Stream stream, ExileExtractTypes extractType)
         {
             // check type matched
             var matchedType = ParserUtilty.GetTypeMatched<T>();
@@ -35,68 +54,122 @@
             {
                 throw new ArgumentNullException("dataList");
             }
+
+            // override sheetname title
+            OverrideSheetAttribute(matchedType);
             _workbook = BuildWorkbook(dataList, extractType, matchedType);
 
             _workbook.Write(stream);
         }
 
-        private IWorkbook BuildWorkbook(IList<T> dataList, ExtractType extractType, ExileMatchResult matchedType)
+        private void OverrideSheetAttribute(ExileMatchResult matched)
+        {
+           if(!string.IsNullOrEmpty(sheetAttribute.SheetName)) matched.SheetName = sheetAttribute.SheetName;
+           if(!string.IsNullOrEmpty(sheetAttribute.TitleText)) matched.TitleText = sheetAttribute.TitleText;
+        }
+
+        private IWorkbook BuildWorkbook(IList<T> dataList, ExileExtractTypes extractType, ExileMatchResult matchedType)
         {
             switch (extractType)
             {
-                case ExtractType.Excel2003:
+                case ExileExtractTypes.Excel2003:
                     _workbook = new HSSFWorkbook();
                     break;
-                case ExtractType.Excel2007:
+                case ExileExtractTypes.Excel2007:
                     _workbook = new XSSFWorkbook();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException("extractType");
             }
 
-            _sheet = _workbook.CreateSheet();
-            var headerRow = _sheet.CreateRow(0);
+            // build sheet attributes
+            _sheet = _workbook.CreateSheet(matchedType.SheetName);
+            var currentRowIndex = 0;
+
+            // bulid sheet title
+            var titleVisibility = matchedType.Visibility;
+            if (titleVisibility!=ExileHeaderVisibility.Invisible)
+            {
+                var titleRow = _sheet.CreateRow(currentRowIndex);
+                currentRowIndex = 1;
+                    
+                var titleCell = titleRow.CreateCell(0);
+                var style = _workbook.CreateCellStyle();
+                style.WrapText = true;
+                style.Alignment = HorizontalAlignment.CENTER;
+                style.VerticalAlignment=VerticalAlignment.CENTER;
+
+                var font = _workbook.CreateFont();
+                font.FontHeight = matchedType.FontHeight;
+                style.SetFont(font);
+                titleRow.Height = matchedType.RowHeight;
+           
+                titleCell.CellStyle = style;
+                titleCell.SetCellValue(matchedType.TitleText);
+
+                if (titleVisibility==ExileHeaderVisibility.VisibleWithCellCombine)
+                {
+                    var cra = new CellRangeAddress(0, 0, 0, matchedType.Headers.Count - 1);
+                    _sheet.AddMergedRegion(cra);
+                }
+            }
 
             // build sheet header
+            var headerRow = _sheet.CreateRow(currentRowIndex);
             var columnIndex = 0;
-            foreach (var h in matchedType.HeaderKeyPair)
+            currentRowIndex++;
+            foreach (var h in matchedType.Headers)
             {
-                headerRow.CreateCell(columnIndex).SetCellValue(h.Value);
+                var cell = headerRow.CreateCell(columnIndex);
+                var style = _workbook.CreateCellStyle();
+                // set border
+                SetBorderStyle(style, BorderStyle.THIN, BorderStyle.THIN, BorderStyle.THIN,
+                    BorderStyle.THIN);
+                cell.CellStyle = style;
+                cell.SetCellValue(h.PropertyDescription);
                 columnIndex++;
             }
 
             // build sheet data
             for (int i = 0; i < dataList.Count; i++)
             {
-                var dataRow = _sheet.CreateRow(i + 1);
+                var dataRow = _sheet.CreateRow(i + currentRowIndex);
                 columnIndex = 0;
-                foreach (var h in matchedType.HeaderKeyPair)
+                foreach (var h in matchedType.Headers)
                 {
                     var cell = dataRow.CreateCell(columnIndex);
-                    var value = ParserUtilty.GetPropValue(dataList[i], h.Key);
-                    var type = ParserUtilty.GetPropType(dataList[i], h.Key);
+                    var value = ParserUtilty.GetPropValue(dataList[i], h.PropertyName);
+                    var type = ParserUtilty.GetPropType(dataList[i], h.PropertyName);
 
-                    // set cell value
-                    if (type == typeof (DateTime))
+                    if (h.ColumnType==ExileColumnType.AutoIndex)
                     {
-                        cell.SetCellValue((DateTime) value);
-                    }
-                    else if (type == typeof (double) || type == typeof (Single) || type == typeof (float) ||
-                             type == typeof (int))
-                    {
-                        cell.SetCellValue(Convert.ToDouble(value));
+                        cell.SetCellValue(i+1);
                     }
                     else
                     {
-                        cell.SetCellValue(value.ToString());
+                        // set cell value
+                        if (type == typeof(DateTime))
+                        {
+                            cell.SetCellValue((DateTime)value);
+                        }
+                        else if (type == typeof(double) || type == typeof(Single) || type == typeof(float) ||
+                                 type == typeof(int))
+                        {
+                            cell.SetCellValue(Convert.ToDouble(value));
+                        }
+                        else
+                        {
+                            cell.SetCellValue(value.ToString());
+                        }
                     }
+
 
 
                     // set cell data format
                     // explicitly defined on ExilePropertyAttribute
-                    var formatId = (int)BuildExilePropertyAttribute(h.Key).ColumnBulitinDataFormat;
-                    var formatString = BuildExilePropertyAttribute(h.Key).ColumnCustomDataFormat;
-                        
+                    var formatId = (int) BuildExilePropertyAttribute(h.PropertyName).ColumnBulitinDataFormat;
+                    var formatString = BuildExilePropertyAttribute(h.PropertyName).ColumnCustomDataFormat;
+
 
                     if (!string.IsNullOrEmpty(formatString))
                     {
@@ -112,7 +185,11 @@
                     }
 
 
-                    cell.CellStyle = BuildCellFormatCache(formatString);
+                    cell.CellStyle = BuildCellDataFormatCache(formatString);
+
+                    // set border
+                    SetBorderStyle(cell.CellStyle, BorderStyle.THIN, BorderStyle.THIN, BorderStyle.THIN,
+                        BorderStyle.THIN);
 
                     columnIndex++;
                 }
@@ -121,36 +198,45 @@
             return _workbook;
         }
 
+        private void SetBorderStyle(ICellStyle style, BorderStyle topStyle, BorderStyle rightStyle,
+            BorderStyle bottomStyle, BorderStyle leftStyle)
+        {
+            style.BorderTop = topStyle;
+            style.BorderRight = rightStyle;
+            style.BorderBottom = bottomStyle;
+            style.BorderLeft = leftStyle;
+        }
+
         /// <summary>
         /// get style by format string
         /// NPOI not allow styles with duplicated formatstring
         /// </summary>
-        /// <param name="cellFormatString"></param>
+        /// <param name="cellDataFormatString"></param>
         /// <returns></returns>
-        private ICellStyle BuildCellFormatCache(string cellFormatString)
+        private ICellStyle BuildCellDataFormatCache(string cellDataFormatString)
         {
-            
+
             ICellStyle style;
-            if (!_cellFormatCache.ContainsKey(cellFormatString))
+            if (!_cellFormatCache.ContainsKey(cellDataFormatString))
             {
                 style = _workbook.CreateCellStyle();
-                int formatId = HSSFDataFormat.GetBuiltinFormat(cellFormatString);
-                // not a buildin data format
+                int formatId = HSSFDataFormat.GetBuiltinFormat(cellDataFormatString);
+                // not a builtin data format
                 if (formatId == -1)
                 {
                     // create new format only when style with same format string not find in cache
                     var format = _workbook.CreateDataFormat();
-                    style.DataFormat = format.GetFormat(cellFormatString);
+                    style.DataFormat = format.GetFormat(cellDataFormatString);
                 }
                 else
                 {
-                    style.DataFormat = (short)formatId;
+                    style.DataFormat = (short) formatId;
                 }
-                _cellFormatCache[cellFormatString] = style;
+                _cellFormatCache[cellDataFormatString] = style;
             }
             else
             {
-                style = _cellFormatCache[cellFormatString];
+                style = _cellFormatCache[cellDataFormatString];
             }
             return style;
         }
@@ -162,12 +248,12 @@
         /// <returns></returns>
         private ExilePropertyAttribute BuildExilePropertyAttribute(string headerText)
         {
-            ExilePropertyAttribute attribute=null;
+            ExilePropertyAttribute attribute = null;
             if (!_exilePropertyAttributes.ContainsKey(headerText))
             {
-                 attribute = ParserUtilty.GetTypeAttribute(typeof(T),headerText);
+                attribute = ParserUtilty.GetTypeAttribute(typeof (T), headerText);
 
-                _exilePropertyAttributes.Add(headerText,attribute);
+                _exilePropertyAttributes.Add(headerText, attribute);
 
             }
             else

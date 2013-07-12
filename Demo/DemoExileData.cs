@@ -8,15 +8,16 @@ using ExileExcel.Common;
 
 namespace Demo
 {
-    [ExiliableAttribute("Demo class")]
+    [ExiliableAttribute(ExileHeaderVisibility.VisibleWithCellCombine,"Demo Sheet Header","ExileExcel Demo Table")]
     class DemoExileData
     {
+        [ExileProperty("序号",ExileColumnType.AutoIndex)]
         public int Id { get; set; }
         [ExileProperty("学号")]
         public string Number { get; set; }
         [ExileProperty("姓名")]
         public string Name { get; set; }
-        [ExileProperty("分数","",NPOIDataFormatEnum.NumberInteger)]
+        [ExileProperty("分数",NPOIDataFormatEnum.NumberInteger)]
         public float Score { get; set; }
         [ExileProperty("考试日期", "YYYY/MM/DD")]
         public DateTime TestDate { get; set; }

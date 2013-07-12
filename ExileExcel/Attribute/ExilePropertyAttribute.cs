@@ -9,7 +9,7 @@
     public class ExilePropertyAttribute : System.Attribute
     {
         private readonly string _headerText;
-        private readonly bool _identityColumn;
+        private readonly ExileColumnType _columnType;
         private readonly int _headerTextSequence;
         private readonly NPOIDataFormatEnum _columnBulitinDataFormat;
         private readonly string _columnCustomDataFormat;
@@ -24,11 +24,11 @@
         }
 
         /// <summary>
-        /// may never used
+        /// if true, output index of entity instead of property value
         /// </summary>
-        public bool IdentityColumn
+        public ExileColumnType ColumnType
         {
-            get { return _identityColumn; }
+            get { return _columnType; }
         }
 
         /// <summary>
@@ -56,19 +56,64 @@
             get { return _headerTextSequence; }
         }
 
+        public ExilePropertyAttribute()
+        {
+           _headerText=string.Empty;
+           _columnType=ExileColumnType.CommonData;
+           _headerTextSequence=-1;
+           _columnBulitinDataFormat=NPOIDataFormatEnum.Text;
+           _columnCustomDataFormat=string.Empty;
+        }
+
         public ExilePropertyAttribute(
             string headerText,
-            string columnCustomDataFormat="",
-            NPOIDataFormatEnum columnBulitinDataFormat = NPOIDataFormatEnum.Text, 
-            int headerTextSequence=-1, 
-            bool identityColumn = false)
+            ExileColumnType columnType,
+            NPOIDataFormatEnum columnBulitinDataFormat = NPOIDataFormatEnum.Text,
+            string columnCustomDataFormat = "",
+            int headerTextSequence=-1 
+            ):this()
         {
             _headerTextSequence = headerTextSequence;
             _headerText = headerText;
-            _identityColumn = identityColumn;
+            _columnType = columnType;
             _columnBulitinDataFormat = columnBulitinDataFormat;
             _columnCustomDataFormat = columnCustomDataFormat;
 
+        }
+
+        public ExilePropertyAttribute(
+            string headerText, 
+            NPOIDataFormatEnum columnBulitinDataFormat = NPOIDataFormatEnum.Text
+            ):this()
+        {
+            _headerText = headerText;
+            _columnBulitinDataFormat = columnBulitinDataFormat;
+        }
+
+        public ExilePropertyAttribute(
+            string headerText,
+            string columnCustomDataFormat = ""
+            ):this()
+        {
+            _headerText = headerText;
+            _columnCustomDataFormat = columnCustomDataFormat;
+        }
+
+        public ExilePropertyAttribute(
+            string headerText,
+            ExileColumnType columnType=ExileColumnType.CommonData
+            ):this()
+        {
+            _headerText = headerText;
+            _columnType = columnType;
+        }
+
+        public ExilePropertyAttribute(
+            string headerText
+            )
+            : this()
+        {
+            _headerText = headerText;
         }
     }
 }

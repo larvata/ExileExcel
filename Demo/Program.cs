@@ -54,12 +54,11 @@ namespace Demo
 
 
             const string outFilePath = @"d:\out.xlsx";
-            var extractor = new ExileExtractor<DemoExileData>();
+            var extractor = new ExileExtractor<DemoExileData>("sheet","title");
            
-
             using (var fs = new FileStream(outFilePath, FileMode.Create, FileAccess.Write))
             {
-                extractor.ExcelWriteStream(outData, fs, ExtractType.Excel2007);
+                extractor.ExcelWriteStream(outData, fs, ExileExtractTypes.Excel2007);
             }
 
         }

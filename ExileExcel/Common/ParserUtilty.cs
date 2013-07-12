@@ -19,16 +19,11 @@
             var retVal = GetTypeMatched<T>();
             var currentKeyPair=new Dictionary<string, string>();
 
-            if (retVal.HeaderKeyPair.Count == headerList.Count)
+            var plist = currentKeyPair.Where(p => !headerList.ContainsValue(p.Value));
+            // all matched
+            if (!plist.Any())
             {
-                var plist = currentKeyPair.Where(p => !headerList.ContainsValue(p.Value));
-                // all matched
-                if (!plist.Any())
-                {
-                    //retVal.HeaderKeyPair = currentKeyPair;
-                    return retVal;
-                }
-                
+                return retVal;
             }
 
             return null;
@@ -41,25 +36,44 @@
         /// <returns></returns>
         internal static ExileMatchResult GetTypeMatched<T>()
         {
-            var retVal = new ExileMatchResult();
+            //var retVal = new ExileMatchResult();
             //var currentKeyPair = new Dictionary<string, string>();
 
             var properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance)
                     .Where(p => p.GetCustomAttributes(typeof(ExilePropertyAttribute), true).Any());
 
-            if (!properties.Any()) throw new Exception("MATCHING TYPE WITH ATTRIBUTE ExilePropertyAttribute");
+            if (!properties.Any()) throw new Exception("MATCHING TYPE WITHOUT ATTRIBUTE ExilePropertyAttribute");
+
+            // aquire class description
+            var exiliableAttr =
+                typeof(T).GetCustomAttributes(typeof(ExiliableAttribute), true).First() as ExiliableAttribute;
+
+            var retVal = new ExileMatchResult
+            {
+                MatchedType = typeof (T),
+                RowHeight = exiliableAttr.RowHeight,
+                FontHeight = exiliableAttr.FontHeight,
+                SheetName = exiliableAttr.SheetName,
+                TitleText = exiliableAttr.TitleText,
+                Visibility = exiliableAttr.Visibility
+            };
 
             foreach (var property in properties)
             {
                 var attr = property.GetCustomAttributes(typeof(ExilePropertyAttribute), true).First() as ExilePropertyAttribute;
-                retVal.HeaderKeyPair.Add(property.Name, attr.HeaderText);
+                retVal.Headers.Add(new ExileHeader
+                {
+                    BuiltinFormat = attr.ColumnBulitinDataFormat,
+                    CustomDataFormat = attr.ColumnCustomDataFormat,
+                    DisplaySequence = attr.HeaderTextSequence,
+                    PropertyDescription = attr.HeaderText,
+                    PropertyName = property.Name, 
+                    ColumnType = attr.ColumnType
+                    
+                });
             }
 
-            // aquire class description
-            retVal.TypeDescription = (typeof(T).GetCustomAttributes(typeof(ExiliableAttribute), true).First() as ExiliableAttribute).Description;
 
-            // aquire type of class
-            retVal.MatchedType = typeof (T);
             return retVal;
         }
 
