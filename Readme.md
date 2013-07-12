@@ -10,17 +10,16 @@ Usage:
 
 Create your class with ExileAttribute to mapping property with excel file head text.You can define data format explicitily also.
 
-    [ExiliableAttribute("Demo class")]
+    [ExiliableAttribute(ExileHeaderVisibility.VisibleWithCellCombine)]
     class DemoExileData
     {
-        public int Id { get; set; }
-
+        [ExileProperty("序号",ExileColumnType.AutoIndex)]
         public int Id { get; set; }
         [ExileProperty("学号")]
         public string Number { get; set; }
         [ExileProperty("姓名")]
         public string Name { get; set; }
-        [ExileProperty("分数","",NPOIDataFormatEnum.NumberInteger)]
+        [ExileProperty("分数",NPOIDataFormatEnum.NumberInteger)]
         public float Score { get; set; }
         [ExileProperty("考试日期", "YYYY/MM/DD")]
         public DateTime TestDate { get; set; }
@@ -68,9 +67,12 @@ Parse from XLS/XLSX files.
 
 2.Write objects to file
 
+    const string outFilePath = @"d:\out.xlsx";
+    var extractor = new ExileExtractor<DemoExileData>("sheet1","this is title");
+   
     using (var fs = new FileStream(outFilePath, FileMode.Create, FileAccess.Write))
     {
-        extractor.ExcelWriteStream(outData, fs, ExtractType.Excel2007);
+        extractor.ExcelWriteStream(outData, fs, ExileExtractTypes.Excel2007);
     }
 
 
