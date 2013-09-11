@@ -1,25 +1,29 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using ExileExcel;
-using ExileExcel.Attribute;
-using ExileExcel.Common;
+using ExileNPOI;
+using ExileNPOI.Attribute;
 
 namespace Demo
 {
-    [ExiliableAttribute(ExileHeaderVisibility.VisibleWithCellCombine,"Demo Sheet Header","ExileExcel Demo Table")]
-    class DemoExileData
+    [ExileSheetTitle(RowHeight = 40, FontHeight = 40)]
+    class DemoExileData:IExilable
     {
-        [ExileProperty("序号",ExileColumnType.AutoIndex)]
+        [ExileColumnDataFormat(ColumnType = ExileColumnType.AutoIndex)]
+        [ExileHeaderGeneral(HeaderText = "序号", HeaderSequence = 1)]
         public int Id { get; set; }
-        [ExileProperty("学号")]
+
+        [ExileColumnDimension(AutoFit = true,ColumnWidth = 20)]
+        [ExileHeaderGeneral(HeaderText = "学号", HeaderSequence = 1)]
         public string Number { get; set; }
-        [ExileProperty("姓名")]
+
+        [ExileHeaderGeneral(HeaderText = "姓名", HeaderSequence = 2)]
         public string Name { get; set; }
-        [ExileProperty("分数",NPOIDataFormatEnum.NumberInteger)]
+
+        [ExileHeaderGeneral(HeaderText = "分数", HeaderSequence = 3)]
         public float Score { get; set; }
-        [ExileProperty("考试日期", "YYYY/MM/DD")]
+
+        [ExileColumnDataFormat(ColumnCustomDataFormat = "YYYY/MM/DD HH:mm:ss")]
+        [ExileHeaderGeneral(HeaderText = "考试日期", HeaderSequence = 4)]
+        [ExileColumnDimension(AutoFit = true,ColumnWidth = 20)]
         public DateTime TestDate { get; set; }
     }
 
