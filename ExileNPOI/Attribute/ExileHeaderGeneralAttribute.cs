@@ -1,8 +1,8 @@
-﻿using System;
-using System.ComponentModel;
-
-namespace ExileNPOI.Attribute
+﻿namespace ExileNPOI.Attribute
 {
+    using System;
+    using System.ComponentModel;
+
     [Description("Header Cell Style Define")]
     [AttributeUsage(AttributeTargets.Property)]
     public class ExileHeaderGeneralAttribute:System.Attribute

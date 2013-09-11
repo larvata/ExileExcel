@@ -1,9 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using ExileNPOI.Attribute;
-
-namespace ExileNPOI.Common
+﻿namespace ExileNPOI.Common
 {
+    using System;
+    using System.Collections.Generic;
+    using Attribute;
+
+    /// <summary>
+    /// exile document Modal
+    /// </summary>
     public class ExileDocumentMeta
     {
         internal Type MatchedType { get; set; }

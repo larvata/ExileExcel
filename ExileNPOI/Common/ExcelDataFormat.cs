@@ -1,17 +1,40 @@
-﻿using System;
-using System.ComponentModel;
-using NPOI.SS.UserModel;
-
-namespace ExileNPOI.Common
+﻿namespace ExileNPOI.Common
 {
+    using System;
+    using NPOI.SS.UserModel;
+
+    // todo convert to batter enum description format
     public enum ExcelDataFormatEnum
     {
-        [Description("General")] General = 0, //0 General
-        [Description("0")] NumberInteger, //1 0
-        Number2DecimalPlace, //2 0.00
-        NumberIntegerWithComma, //3 #,##0
-        Number2DecimalPlaceWithComma, //4 #,##0.00
-        CurrencyInteger, //5 "$"#,##0_);("$"#,##0)
+        /// <summary>
+        /// 0 General
+        /// </summary>
+        General = 0,
+
+        /// <summary>
+        /// 0
+        /// </summary>
+        NumberInteger=1, 
+
+        /// <summary>
+        /// 0.00
+        /// </summary>
+        Number2DecimalPlace=2, 
+
+        /// <summary>
+        /// #,##0
+        /// </summary>
+        NumberIntegerWithComma=3, 
+
+        /// <summary>
+        /// #,##0.00
+        /// </summary>
+        Number2DecimalPlaceWithComma=4,
+ 
+        /// <summary>
+        /// "$"#,##0_);("$"#,##0)
+        /// </summary>
+        CurrencyInteger=5, //5 
         CurrencyIntegerWithRedAlert, //6 "$"#,##0_);[Red]("$"#,##0)
         Currency2DecimalPlace, //7 "$"#,##0.00_);("$"#,##0.00)
         Currency2DecimalPlaceWithRedAlert, //8 "$"#,##0.00_);[Red]("$"#,##0.00) 

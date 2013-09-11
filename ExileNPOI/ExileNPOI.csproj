@@ -54,6 +54,7 @@
     <Compile Include="Attribute\ExileColumnDimensionAttribute.cs" />
     <Compile Include="Attribute\ExileColumnType.cs" />
     <Compile Include="Attribute\ExileHeaderGeneralAttribute.cs" />
+    <Compile Include="Attribute\ExilePrintPageMarginAttribute.cs" />
     <Compile Include="Attribute\ExileSheetTitleAttribute.cs" />
     <Compile Include="Common\ExcelDataFormat.cs" />
     <Compile Include="Common\ExileDocumentMeta.cs" />

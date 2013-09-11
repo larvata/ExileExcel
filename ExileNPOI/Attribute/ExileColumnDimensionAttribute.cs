@@ -1,9 +1,9 @@
-﻿using System;
-using System.ComponentModel;
-
-namespace ExileNPOI.Attribute
+﻿namespace ExileNPOI.Attribute
 {
-    [Description("Heae")]
+    using System;
+    using System.ComponentModel;
+
+    [Description("Column size and presention")]
     [AttributeUsage(AttributeTargets.Property)]
     public class ExileColumnDimensionAttribute:System.Attribute
     {

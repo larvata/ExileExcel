@@ -1,12 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using ExileNPOI.Attribute;
-using ExileNPOI.Common;
+﻿
 
 namespace ExileNPOI.Mixins
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Reflection;
+    using Attribute;
+    using Common;
+
     internal static class Utils
     {
         /// <summary>
@@ -99,9 +101,9 @@ namespace ExileNPOI.Mixins
         /// <param name="src"></param>
         /// <param name="propName"></param>
         /// <returns></returns>
-        public static System.Attribute GetTypeAttribute(Type src, string propName)
+        public static Attribute GetTypeAttribute(Type src, string propName)
         {
-            return src.GetProperty(propName).GetCustomAttributes(typeof(System.Attribute), true).First() as System.Attribute;
+            return src.GetProperty(propName).GetCustomAttributes(typeof(Attribute), true).First() as Attribute;
         }
 
         public static object GetPropValue(object src, string propName)
@@ -116,7 +118,7 @@ namespace ExileNPOI.Mixins
 
         public static IEnumerable<Type> GetTypesByAttribute(Type attributeType)
         {
-            foreach (Type type in AppDomain.CurrentDomain.GetAssemblies().SelectMany(a => a.GetTypes()))
+            foreach (var type in AppDomain.CurrentDomain.GetAssemblies().SelectMany(a => a.GetTypes()))
             {
                 if (type.GetCustomAttributes(attributeType, true).Length > 0)
                 {

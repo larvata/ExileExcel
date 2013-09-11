@@ -1,13 +1,11 @@
-﻿
-
-using System;
-using System.ComponentModel;
-
-namespace ExileNPOI.Attribute
+﻿namespace ExileNPOI.Attribute
 {
+    using System;
+    using System.ComponentModel;
+
     [Description("Header Cell Style Define")]
     [AttributeUsage(AttributeTargets.Class)]
-    public class ExileSheetTitleAttribute:System.Attribute
+    public class ExileSheetTitleAttribute:Attribute
     {
         public short FontHeight { get; set; }
         public short RowHeight { get; set; }
