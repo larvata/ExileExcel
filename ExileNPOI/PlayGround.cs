@@ -12,7 +12,7 @@ namespace ExileNPOI
         public void Play()
         {
 
-            var a = ExilePrintSetup.PageSize.tt;
+            //var a = ExilePrintSetup.PageSize.tt;
         }
     }
 }

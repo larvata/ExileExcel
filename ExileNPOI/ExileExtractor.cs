@@ -37,8 +37,8 @@ namespace ExileNPOI
         {
             switch (extractType)
             {
-                case ExileExtractTypes.Excel2003Npoi:
-                case ExileExtractTypes.Excel2007Npoi:
+                case ExileExtractTypes.Excel2003NPOI:
+                case ExileExtractTypes.Excel2007NPOI:
                     ExcelWriteStream(dataList, stream, extractType);
                     break;
                 case ExileExtractTypes.Excel2007:
@@ -56,10 +56,10 @@ namespace ExileNPOI
 
             switch (extractType)
             {
-                case ExileExtractTypes.Excel2003Npoi:
+                case ExileExtractTypes.Excel2003NPOI:
                     _workbook = new HSSFWorkbook();
                     break;
-                case ExileExtractTypes.Excel2007Npoi:
+                case ExileExtractTypes.Excel2007NPOI:
                     _workbook = new XSSFWorkbook();
                     break;
                 case ExileExtractTypes.Excel2007:
