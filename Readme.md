@@ -1,7 +1,7 @@
 ExileExcel
 ==========
 
-ExileExcel is an library aim for parse/output Microsoft Excel file with dead easy ways.This project is based on [.NET NPOI 2.0 beta1][0] for read/write excel files.
+ExileExcel is an library aim for parse/output Microsoft Excel file with dead easy ways.This project is based on [.NET NPOI 2.0 RC][0] for read/write excel files.
 
 Usage:
 -----------
@@ -10,22 +10,30 @@ Usage:
 
 Create your class with ExileAttribute to mapping property with excel file head text.You can define data format explicitily also.
 
-    [ExiliableAttribute(ExileHeaderVisibility.VisibleWithCellCombine)]
-    class DemoExileData
+    [ExileSheetTitle(RowHeight = 40, FontHeight = 40)]
+    class DemoExileData:IExilable
     {
-        [ExileProperty("序号",ExileColumnType.AutoIndex)]
+        [ExileColumnDataFormat(ColumnType = ExileColumnType.AutoIndex)]
+        [ExileHeaderGeneral(HeaderText = "序号", HeaderSequence = 1)]
         public int Id { get; set; }
-        [ExileProperty("学号")]
+
+        [ExileColumnDimension(AutoFit = true,ColumnWidth = 20)]
+        [ExileHeaderGeneral(HeaderText = "学号", HeaderSequence = 1)]
         public string Number { get; set; }
-        [ExileProperty("姓名")]
+
+        [ExileHeaderGeneral(HeaderText = "姓名", HeaderSequence = 2)]
         public string Name { get; set; }
-        [ExileProperty("分数",NPOIDataFormatEnum.NumberInteger)]
+
+        [ExileHeaderGeneral(HeaderText = "分数", HeaderSequence = 3)]
         public float Score { get; set; }
-        [ExileProperty("考试日期", "YYYY/MM/DD")]
+
+        [ExileColumnDataFormat(ColumnCustomDataFormat = "YYYY/MM/DD HH:mm:ss")]
+        [ExileHeaderGeneral(HeaderText = "考试日期", HeaderSequence = 4)]
+        [ExileColumnDimension(AutoFit = true,ColumnWidth = 20)]
         public DateTime TestDate { get; set; }
     }
 
-**Import:**
+**Import:**(not available in current version, checkout `b56f36c` to use it)
 
 Parse from XLS/XLSX files.
 
@@ -64,21 +72,16 @@ Parse from XLS/XLSX files.
         }
     };
 
+2.Write data to file
 
-2.Write objects to file
-
-    const string outFilePath = @"d:\out.xlsx";
-    var extractor = new ExileExtractor<DemoExileData>("sheet1","this is title");
+    const string outFilePath = @"out.docx";
+    var extractor = new ExileExtractor<DemoExileData>();
    
-    using (var fs = new FileStream(outFilePath, FileMode.Create, FileAccess.Write))
+    using (var fs = new FileStream(outFilePath4, FileMode.Create))
     {
-        extractor.ExcelWriteStream(outData, fs, ExileExtractTypes.Excel2007);
+        extractor.SheetName = "sheet A";
+        extractor.TitleText = "title";
+        extractor.WriteStream(outData, fs, ExileExtractTypes.Word2007OpenXML);
     }
-
-
-Todo:
------------
-1. Output data to word2003/2007.
-2. Excel template support.
 
 [0]: https://github.com/tonyqus/npoi
