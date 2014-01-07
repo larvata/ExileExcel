@@ -41,9 +41,9 @@ namespace ExileNPOI
                 case ExileExtractTypes.Excel2007NPOI:
                     ExcelWriteStream(dataList, stream, extractType);
                     break;
-                case ExileExtractTypes.Excel2007:
+                case ExileExtractTypes.Excel2007OpenXML:
                     break;
-                case ExileExtractTypes.Word2007:
+                case ExileExtractTypes.Word2007OpenXML:
                     WordWriteStream(dataList, stream);
                     break;
                 default:
@@ -62,7 +62,7 @@ namespace ExileNPOI
                 case ExileExtractTypes.Excel2007NPOI:
                     _workbook = new XSSFWorkbook();
                     break;
-                case ExileExtractTypes.Excel2007:
+                case ExileExtractTypes.Excel2007OpenXML:
                     break;
                 default:
                     throw new ArgumentOutOfRangeException("extractType");
@@ -81,7 +81,7 @@ namespace ExileNPOI
             _workbook.Write(stream);
         }
 
-        private  void WordWriteStream(IList<T> dataList, Stream stream)
+        private void WordWriteStream(IList<T> dataList, Stream stream)
         {
             using(var ms=new MemoryStream())
             {

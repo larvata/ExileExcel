@@ -5,7 +5,14 @@ using System.Text;
 
 namespace ExileNPOI
 {
-    class ExilePaser
+    public class ExilePaser<T> where T : IExilable, new()
     {
+        public T Parse(string path)
+        {
+            return new T();
+        }
+
+        
+       
     }
 }

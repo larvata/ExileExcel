@@ -15,12 +15,12 @@
         /// <summary>
         /// OPENXML manage Excel 2007+ format
         /// </summary>
-        Excel2007,
+        Excel2007OpenXML,
 
         /// <summary>
         /// OPENXML manage Word 2007+ format
         /// </summary>
-        Word2007
+        Word2007OpenXML
     }
 
 //    public enum ExileHeaderVisibility

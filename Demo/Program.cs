@@ -12,20 +12,8 @@ namespace Demo
     {
         private static void Main(string[] args)
         {
-//            XWPFDocument doc = null;
-//            
-//            using (var fs=new FileStream(@"d:\1.doc",FileMode.Open,FileAccess.Read))
-//            {
-//                doc= new XWPFDocument(fs);
-//                    
-//            }
-//            
-//
-//            return;
-
-//            var excelParser = new ExileParser<DemoExileData>();
-//            var list = excelParser.Parse(@"d:\1.xlsx");
-
+            #region Extract
+            
             var outData = new List<DemoExileData>
             {
                 new DemoExileData
@@ -63,39 +51,19 @@ namespace Demo
 
 
             };
-//
-//
-//            const string outFilePath = @"d:\out.xlsx";
-//            var extractor = new ExileExtractor<DemoExileData>("sheet","title");
-//           
-//            using (var fs = new FileStream(outFilePath, FileMode.Create, FileAccess.Write))
-//            {
-//                extractor.ExcelWriteStream(outData, fs, ExcelExtractTypes.Excel2007);
-//            }
-//
-//
-//            /////////////////////////////
-//            IWorkbook workbook=new XSSFWorkbook();
-//            var sheet= workbook.CreateSheet("sheet A");
-//            sheet.Compose(outData,"Big Title");
-//            const string outFilePath2 = @"d:\out2.xlsx";
-//            using (var fs=new FileStream(outFilePath2,FileMode.Create,FileAccess.Write))
-//            {
-//                workbook.Write(fs);
-//            }
 
-            const string outFilePath4 = @"d:\out4.docx";
-            const string outFilePath3 = @"d:\out3.xlsx";
+            const string outFilePath4 = @"d:\out3.docx";
+            //const string outFilePath3 = @"d:\out3.xlsx";
             var extractor = new ExileExtractor<DemoExileData>();
             using (var fs = new FileStream(outFilePath4, FileMode.Create))
             {
                 extractor.SheetName = "sheet A";
                 extractor.TitleText = "titttttttttttttttttile";
-                extractor.WriteStream(outData,fs,ExileExtractTypes.Word2007);
+                extractor.WriteStream(outData, fs, ExileExtractTypes.Word2007OpenXML);
             }
+            #endregion
 
-//            var t=new TestForTemplate();
-//            t.BuildData();
+
         }
     }
 }

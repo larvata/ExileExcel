@@ -31,8 +31,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DocumentFormat.OpenXml, Version=2.0.5022.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="DocumentFormat.OpenXml">
       <HintPath>Library\DocumentFormat.OpenXml.dll</HintPath>
     </Reference>
     <Reference Include="NPOI, Version=2.0.1.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
@@ -62,18 +61,28 @@
     <Compile Include="ExileEnums.cs" />
     <Compile Include="ExileExtractor.cs" />
     <Compile Include="ExilePaser.cs" />
-    <Compile Include="ExileWordExtractor.cs" />
+    <Compile Include="ExileWordExtractor.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="IExilable.cs" />
     <Compile Include="ExileExcelExtractor.cs" />
     <Compile Include="Interface\IExtractor.cs" />
     <Compile Include="Mixins\ExileExcel.cs" />
     <Compile Include="Mixins\ExileWord.cs" />
     <Compile Include="Mixins\Utils.cs" />
-    <Compile Include="PlayGround.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="Library\" />
+    <Content Include="Library\DocumentFormat.OpenXml.dll" />
+    <Content Include="Library\ICSharpCode.SharpZipLib.dll" />
+    <Content Include="Library\NPOI.dll" />
+    <Content Include="Library\NPOI.OOXML.dll" />
+    <Content Include="Library\NPOI.OOXML.XML" />
+    <Content Include="Library\NPOI.OpenXml4Net.dll" />
+    <Content Include="Library\NPOI.OpenXml4Net.XML" />
+    <Content Include="Library\NPOI.OpenXmlFormats.dll" />
+    <Content Include="Library\NPOI.XML" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

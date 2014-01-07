@@ -101,10 +101,10 @@ namespace ExileNPOI
 
             // todo move to attribute
             // set print margin
-            _sheet.SetMargin(MarginType.TopMargin, 0);
-            _sheet.SetMargin(MarginType.BottomMargin, 0);
-            _sheet.SetMargin(MarginType.LeftMargin, 0);
-            _sheet.SetMargin(MarginType.RightMargin, 0);
+            //_sheet.SetMargin(MarginType.TopMargin, 0);
+//            _sheet.SetMargin(MarginType.BottomMargin, 0);
+//            _sheet.SetMargin(MarginType.LeftMargin, 0);
+//            _sheet.SetMargin(MarginType.RightMargin, 0);
             _sheet.PrintSetup.Scale = 100;
             // set paper size as A4
             _sheet.PrintSetup.PaperSize=9;
@@ -117,8 +117,8 @@ namespace ExileNPOI
             var titleCell = titleRow.CreateCell(0);
             var headerstyle = _sheet.Workbook.CreateCellStyle();
             headerstyle.WrapText = true;
-            headerstyle.Alignment = HorizontalAlignment.CENTER;
-            headerstyle.VerticalAlignment = VerticalAlignment.CENTER;
+            headerstyle.Alignment = HorizontalAlignment.Center;
+            headerstyle.VerticalAlignment = VerticalAlignment.Center;
 
             var font = _sheet.Workbook.CreateFont();
             font.FontHeightInPoints = DocumentMeta.TitleFontHeight;
@@ -141,8 +141,8 @@ namespace ExileNPOI
                 var cell = headerRow.CreateCell(columnIndex);
                 var style = _sheet.Workbook.CreateCellStyle();
                 // set border
-                SetBorderStyle(style, BorderStyle.THIN, BorderStyle.THIN, BorderStyle.THIN,
-                    BorderStyle.THIN);
+                SetBorderStyle(style, BorderStyle.Thin, BorderStyle.Thin, BorderStyle.Thin,
+                    BorderStyle.Thin);
 
                 cell.CellStyle = style;
                 cell.SetCellValue(h.PropertyDescription);
@@ -153,15 +153,16 @@ namespace ExileNPOI
                 columnIndex++;
             }
 
+
             // build sheet data
             for (int i = 0; i < dataList.Count; i++)
             {
                 var dataRow = _sheet.CreateRow(i + currentRowIndex);
                 //set row height
-                //                if (DocumentMeta.RowHeight!=0)
-                //                {
-                //                    dataRow.HeightInPoints = DocumentMeta.RowHeight;
-                //                }
+//                                if (DocumentMeta.RowHeight!=0)
+//                                {
+//                                    dataRow.HeightInPoints = DocumentMeta.RowHeight;
+//                                }
 
                 columnIndex = 0;
                 foreach (var h in DocumentMeta.Headers)
@@ -218,8 +219,8 @@ namespace ExileNPOI
                     cell.CellStyle = style;
 
                     // set border
-                    SetBorderStyle(cell.CellStyle, BorderStyle.THIN, BorderStyle.THIN, BorderStyle.THIN,
-                        BorderStyle.THIN);
+                    SetBorderStyle(cell.CellStyle, BorderStyle.Thin, BorderStyle.Thin, BorderStyle.Thin,
+                        BorderStyle.Thin);
 
                     columnIndex++;
                 }
