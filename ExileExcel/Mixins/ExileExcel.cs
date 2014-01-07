@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using NPOI.SS.UserModel;
 
-namespace ExileNPOI.Mixins
+namespace ExileExcel.Mixins
 {
     // todo implement Parse method
     public static class MojitoCells

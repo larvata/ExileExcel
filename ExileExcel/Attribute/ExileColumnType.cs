@@ -1,4 +1,4 @@
-﻿namespace ExileNPOI.Attribute
+﻿namespace ExileExcel.Attribute
 {
     public enum ExileColumnType
     {

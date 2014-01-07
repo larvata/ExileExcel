@@ -1,11 +1,11 @@
-﻿namespace ExileNPOI.Attribute
-{
-    using System;
-    using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 
+namespace ExileExcel.Attribute
+{
     [Description("Page margin setting")]
     [AttributeUsage(AttributeTargets.Property)]
-    class ExilePrintPageMarginAttribute:Attribute
+    class ExilePrintPageMarginAttribute:System.Attribute
     {
         public int MarginLeft;
         public int MarginTop;

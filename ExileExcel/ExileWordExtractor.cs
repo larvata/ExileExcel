@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Wordprocessing;
-using ExileNPOI.Attribute;
-using ExileNPOI.Common;
-using ExileNPOI.Interface;
-using ExileNPOI.Mixins;
+using ExileExcel.Attribute;
+using ExileExcel.Common;
+using ExileExcel.Interface;
+using ExileExcel.Mixins;
 
-namespace ExileNPOI
+namespace ExileExcel
 {
     internal class ExileWordExtractor<T> : IExtractor<T> where T : IExilable
     {

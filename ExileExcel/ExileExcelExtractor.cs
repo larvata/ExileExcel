@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using ExileNPOI.Attribute;
-using ExileNPOI.Common;
-using ExileNPOI.Interface;
-using ExileNPOI.Mixins;
+using ExileExcel.Attribute;
+using ExileExcel.Common;
+using ExileExcel.Interface;
+using ExileExcel.Mixins;
 using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
 using NPOI.SS.Util;
 
-namespace ExileNPOI
+namespace ExileExcel
 {
     internal class ExileExcelExtractor<T> : IExtractor<T> where T:IExilable
     {

@@ -1,4 +1,4 @@
-﻿namespace ExileNPOI.Common
+﻿namespace ExileExcel.Common
 {
 
     public enum PrintPageSize

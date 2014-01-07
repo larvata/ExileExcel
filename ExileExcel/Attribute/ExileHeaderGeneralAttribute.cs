@@ -1,8 +1,8 @@
-﻿namespace ExileNPOI.Attribute
-{
-    using System;
-    using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 
+namespace ExileExcel.Attribute
+{
     [Description("Header Cell Style Define")]
     [AttributeUsage(AttributeTargets.Property)]
     public class ExileHeaderGeneralAttribute:System.Attribute

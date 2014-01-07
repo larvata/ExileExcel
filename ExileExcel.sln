@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo", "Demo\Demo.csproj", "{AF71D78C-38BA-4249-A270-C5EC22694171}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExileNPOI", "ExileNPOI\ExileNPOI.csproj", "{19653910-F93F-4A02-8C8C-01710A75D66C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExileExcel", "ExileExcel\ExileExcel.csproj", "{19653910-F93F-4A02-8C8C-01710A75D66C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

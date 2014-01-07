@@ -1,4 +1,4 @@
-﻿namespace ExileNPOI
+﻿namespace ExileExcel
 {
     public interface IExilable
     {

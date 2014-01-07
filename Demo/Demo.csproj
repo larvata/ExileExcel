@@ -33,13 +33,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="NPOI, Version=2.0.1.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\ExileNPOI\Library\NPOI.dll</HintPath>
+    <Reference Include="NPOI">
+      <HintPath>..\ExileExcel\Library\NPOI.dll</HintPath>
     </Reference>
-    <Reference Include="NPOI.OOXML, Version=2.0.1.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\ExileNPOI\Library\NPOI.OOXML.dll</HintPath>
+    <Reference Include="NPOI.OOXML">
+      <HintPath>..\ExileExcel\Library\NPOI.OOXML.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -54,9 +52,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ExileNPOI\ExileNPOI.csproj">
-      <Project>{19653910-f93f-4a02-8c8c-01710a75d66c}</Project>
-      <Name>ExileNPOI</Name>
+    <ProjectReference Include="..\ExileExcel\ExileExcel.csproj">
+      <Project>{19653910-F93F-4A02-8C8C-01710A75D66C}</Project>
+      <Name>ExileExcel</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

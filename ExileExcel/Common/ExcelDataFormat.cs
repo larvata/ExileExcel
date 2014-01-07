@@ -1,8 +1,8 @@
-﻿namespace ExileNPOI.Common
-{
-    using System;
-    using NPOI.SS.UserModel;
+﻿using System;
+using NPOI.SS.UserModel;
 
+namespace ExileExcel.Common
+{
     // todo convert to batter enum description format
     public enum ExcelDataFormatEnum
     {

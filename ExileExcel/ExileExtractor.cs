@@ -8,7 +8,7 @@ using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 
-namespace ExileNPOI
+namespace ExileExcel
 {
     public class ExileExtractor<T> where T:IExilable
     {

@@ -1,14 +1,12 @@
-﻿
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using ExileExcel.Attribute;
+using ExileExcel.Common;
 
-namespace ExileNPOI.Mixins
+namespace ExileExcel.Mixins
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Reflection;
-    using Attribute;
-    using Common;
-
     internal static class Utils
     {
         /// <summary>
@@ -101,9 +99,9 @@ namespace ExileNPOI.Mixins
         /// <param name="src"></param>
         /// <param name="propName"></param>
         /// <returns></returns>
-        public static Attribute GetTypeAttribute(Type src, string propName)
+        public static System.Attribute GetTypeAttribute(Type src, string propName)
         {
-            return src.GetProperty(propName).GetCustomAttributes(typeof(Attribute), true).First() as Attribute;
+            return src.GetProperty(propName).GetCustomAttributes(typeof(System.Attribute), true).First() as System.Attribute;
         }
 
         public static object GetPropValue(object src, string propName)

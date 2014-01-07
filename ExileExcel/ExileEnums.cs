@@ -1,4 +1,4 @@
-﻿namespace ExileNPOI
+﻿namespace ExileExcel
 {
     public enum ExileExtractTypes
     {

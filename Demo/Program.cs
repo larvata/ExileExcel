@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using ExileNPOI;
-using ExileNPOI.Common;
+using ExileExcel;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 
@@ -52,14 +51,14 @@ namespace Demo
 
             };
 
-            const string outFilePath4 = @"d:\out3.docx";
+            const string outFilePath4 = @"d:\out.xls";
             //const string outFilePath3 = @"d:\out3.xlsx";
             var extractor = new ExileExtractor<DemoExileData>();
             using (var fs = new FileStream(outFilePath4, FileMode.Create))
             {
                 extractor.SheetName = "sheet A";
                 extractor.TitleText = "titttttttttttttttttile";
-                extractor.WriteStream(outData, fs, ExileExtractTypes.Word2007OpenXML);
+                extractor.WriteStream(outData, fs, ExileExtractTypes.Excel2003NPOI);
             }
             #endregion
 
