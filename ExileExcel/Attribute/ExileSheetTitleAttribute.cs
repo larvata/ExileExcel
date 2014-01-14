@@ -9,5 +9,6 @@ namespace ExileExcel.Attribute
     {
         public short FontHeight { get; set; }
         public short RowHeight { get; set; }
+        public bool HideHeader { get; set; }
     }
 }

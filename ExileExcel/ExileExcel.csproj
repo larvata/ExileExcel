@@ -42,6 +42,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Library\NPOI.OOXML.dll</HintPath>
     </Reference>
+    <Reference Include="NPOI.OpenXml4Net, Version=2.0.6.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Library\NPOI.OpenXml4Net.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="WindowsBase" />
@@ -52,6 +56,7 @@
     <Compile Include="Attribute\ExileColumnType.cs" />
     <Compile Include="Attribute\ExileHeaderGeneralAttribute.cs" />
     <Compile Include="Attribute\ExilePrintPageMarginAttribute.cs" />
+    <Compile Include="Attribute\ExileSheetDataArea.cs" />
     <Compile Include="Attribute\ExileSheetTitleAttribute.cs" />
     <Compile Include="Common\ExcelDataFormat.cs" />
     <Compile Include="Common\ExileDocumentMeta.cs" />

@@ -33,25 +33,25 @@ namespace ExileExcel
             TitleText = titleText;
         }
 
-        public void WriteStream(List<T> dataList, Stream stream, ExileExtractTypes extractType)
+        public void WriteStream(List<T> dataList, Stream stream, ExileExtractTypes extractType,string templateFilePath="")
         {
             switch (extractType)
             {
                 case ExileExtractTypes.Excel2003NPOI:
                 case ExileExtractTypes.Excel2007NPOI:
-                    ExcelWriteStream(dataList, stream, extractType);
+                    ExcelWriteStream(dataList, stream, extractType,templateFilePath);
                     break;
                 case ExileExtractTypes.Excel2007OpenXML:
                     break;
                 case ExileExtractTypes.Word2007OpenXML:
-                    WordWriteStream(dataList, stream);
+                    WordWriteStream(dataList, stream,templateFilePath);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException("extractType");
             }
         }
 
-        private void ExcelWriteStream(IList<T> dataList, Stream stream, ExileExtractTypes extractType)
+        private void ExcelWriteStream(IList<T> dataList, Stream stream, ExileExtractTypes extractType, string templateFilePath = "")
         {
 
             switch (extractType)
@@ -68,9 +68,20 @@ namespace ExileExcel
                     throw new ArgumentOutOfRangeException("extractType");
             }
 
-            _sheet = string.IsNullOrEmpty(SheetName) 
-                ? _workbook.CreateSheet() 
-                : _workbook.CreateSheet(SheetName);   
+            if (!string.IsNullOrEmpty(templateFilePath))
+            {
+                _workbook = WorkbookFactory.Create(templateFilePath);
+                _sheet = _workbook.GetSheetAt(0);
+            }
+            else
+            {
+                
+
+                _sheet = string.IsNullOrEmpty(SheetName)
+                    ? _workbook.CreateSheet()
+                    : _workbook.CreateSheet(SheetName);   
+            }
+
 
             var extractor = new ExileExcelExtractor<T>(_sheet);
             if (!string.IsNullOrEmpty(TitleText))
@@ -81,7 +92,7 @@ namespace ExileExcel
             _workbook.Write(stream);
         }
 
-        private void WordWriteStream(IList<T> dataList, Stream stream)
+        private void WordWriteStream(IList<T> dataList, Stream stream,string templateFilePath="")
         {
             using(var ms=new MemoryStream())
             {

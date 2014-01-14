@@ -13,9 +13,9 @@ namespace Demo
         {
             #region Extract
             
-            var outData = new List<DemoExileData>
+            var outData = new List<DemoExileDataTemplate>
             {
-                new DemoExileData
+                new DemoExileDataTemplate
                 {
                     Id = 1,
                     Name = "Alzzl",
@@ -23,7 +23,7 @@ namespace Demo
                     Score = (float) 50.0,
                     TestDate = new DateTime(2013, 1, 3)
                 },
-                new DemoExileData
+                new DemoExileDataTemplate
                 {
                     Id = 1,
                     Name = "Larvata",
@@ -31,7 +31,7 @@ namespace Demo
                     Score = (float) 84.5,
                     TestDate = new DateTime(2013, 1, 5)
                 },
-                new DemoExileData
+                new DemoExileDataTemplate
                 {
                     Id=1,
                     Name = "LALALA",
@@ -39,7 +39,7 @@ namespace Demo
                     Score = (float)100.0,
                     TestDate = new DateTime(2012,5,5)
                 },
-                new DemoExileData
+                new DemoExileDataTemplate
                 {
                     Id = 1,
                     Name = "果子林",
@@ -51,14 +51,14 @@ namespace Demo
 
             };
 
-            const string outFilePath4 = @"d:\out.xls";
+            const string outFilePath4 = @"d:\out_etmplate.xls";
             //const string outFilePath3 = @"d:\out3.xlsx";
-            var extractor = new ExileExtractor<DemoExileData>();
+            var extractor = new ExileExtractor<DemoExileDataTemplate>();
             using (var fs = new FileStream(outFilePath4, FileMode.Create))
             {
                 extractor.SheetName = "sheet A";
                 extractor.TitleText = "titttttttttttttttttile";
-                extractor.WriteStream(outData, fs, ExileExtractTypes.Excel2003NPOI);
+                extractor.WriteStream(outData, fs, ExileExtractTypes.Excel2003NPOI, @"d:\template.xls");
             }
             #endregion
 

@@ -16,6 +16,11 @@ namespace ExileExcel.Common
         public short TitleFontHeight { get; set; }
         public short TitleRowHeight { get; set; }
 
+        public int StartRowNum { get; set; }
+        public int StartColumnNum { get; set; }
+
+        public bool HideHeader { get; set; }
+
         public ExileDocumentMeta()
         {
             Headers = new List<ExileHeaderMeta>();

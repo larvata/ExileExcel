@@ -97,9 +97,10 @@ namespace ExileExcel
 
         public void FillContent(IList<T> dataList)
         {
-            var currentRowIndex = 0;
+            var currentRowIndex = DocumentMeta.StartRowNum;
 
             // todo move to attribute
+            // todo cause file format destory on npoi rc 2.0.6
             // set print margin
             //_sheet.SetMargin(MarginType.TopMargin, 0);
 //            _sheet.SetMargin(MarginType.BottomMargin, 0);
@@ -112,7 +113,7 @@ namespace ExileExcel
             // todo remove visibility from here use it from headerAttribute
             // bulid sheet title
             var titleRow = _sheet.CreateRow(currentRowIndex);
-            currentRowIndex = 1;
+            currentRowIndex ++;
 
             var titleCell = titleRow.CreateCell(0);
             var headerstyle = _sheet.Workbook.CreateCellStyle();
@@ -133,25 +134,33 @@ namespace ExileExcel
 
 
             // build sheet header
-            var headerRow = _sheet.CreateRow(currentRowIndex);
-            var columnIndex = 0;
             currentRowIndex++;
+            var headerRow = _sheet.CreateRow(currentRowIndex);
+            var columnIndex = DocumentMeta.StartColumnNum;
+            
             foreach (var h in DocumentMeta.Headers)
             {
-                var cell = headerRow.CreateCell(columnIndex);
-                var style = _sheet.Workbook.CreateCellStyle();
-                // set border
-                SetBorderStyle(style, BorderStyle.Thin, BorderStyle.Thin, BorderStyle.Thin,
-                    BorderStyle.Thin);
-
-                cell.CellStyle = style;
-                cell.SetCellValue(h.PropertyDescription);
-                if (h.Width != 0)
+                // if showHeader set as false only caculate counts of headers
+                if (!DocumentMeta.HideHeader)
                 {
-                    _sheet.SetColumnWidth(columnIndex, h.Width * 256);
+                    var cell = headerRow.CreateCell(columnIndex);
+                    var style = _sheet.Workbook.CreateCellStyle();
+                    // set border
+                    SetBorderStyle(style, BorderStyle.Thin, BorderStyle.Thin, BorderStyle.Thin,
+                        BorderStyle.Thin);
+
+                    cell.CellStyle = style;
+                    cell.SetCellValue(h.PropertyDescription);
+                    if (h.Width != 0)
+                    {
+                        _sheet.SetColumnWidth(columnIndex, h.Width * 256);
+                    }
                 }
                 columnIndex++;
             }
+
+            // reset currentRowIndex when use template
+            currentRowIndex = DocumentMeta.StartRowNum;
 
 
             // build sheet data
@@ -164,7 +173,7 @@ namespace ExileExcel
 //                                    dataRow.HeightInPoints = DocumentMeta.RowHeight;
 //                                }
 
-                columnIndex = 0;
+                columnIndex = DocumentMeta.StartColumnNum;
                 foreach (var h in DocumentMeta.Headers)
                 {
                     var cell = dataRow.CreateCell(columnIndex);

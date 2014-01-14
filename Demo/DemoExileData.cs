@@ -1,10 +1,12 @@
 ﻿using System;
 using ExileExcel;
 using ExileExcel.Attribute;
+using NPOI.SS.Formula.Functions;
 
 namespace Demo
 {
     [ExileSheetTitle(RowHeight = 40, FontHeight = 40)]
+    [ExileSheetDataArea(StartRowNum = 5)]
     class DemoExileData:IExilable
     {
         [ExileColumnDataFormat(ColumnType = ExileColumnType.AutoIndex)]

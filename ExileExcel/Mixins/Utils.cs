@@ -37,21 +37,30 @@ namespace ExileExcel.Mixins
         /// <returns></returns>
         internal static ExileDocumentMeta GetTypeMatched<T>()
         {
-
+            var retVal = new ExileDocumentMeta();
             var properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance)
                     .Where(p => p.GetCustomAttributes(typeof(ExileHeaderGeneralAttribute), true).Any());
 
-            if (!properties.Any()) throw new Exception("MATCHING TYPE WITHOUT ATTRIBUTE ExilePropertyAttribute");
+            //if (!properties.Any()) throw new Exception("MATCHING TYPE WITHOUT ATTRIBUTE ExilePropertyAttribute");
 
-            var sheetHeaderAttr=
-               typeof(T).GetCustomAttributes(typeof(ExileSheetTitleAttribute), true).First() as ExileSheetTitleAttribute;
+            var sheetTitleAttr=
+               typeof(T).GetCustomAttributes(typeof(ExileSheetTitleAttribute), true).FirstOrDefault() as ExileSheetTitleAttribute;
 
-            var retVal = new ExileDocumentMeta {MatchedType = typeof (T)};
+            retVal.MatchedType = typeof (T);
 
-            if (sheetHeaderAttr!=null)
+            if (sheetTitleAttr!=null)
             {
-                retVal.TitleFontHeight = sheetHeaderAttr.FontHeight;
-                retVal.TitleRowHeight = sheetHeaderAttr.RowHeight;
+                retVal.TitleFontHeight = sheetTitleAttr.FontHeight;
+                retVal.TitleRowHeight = sheetTitleAttr.RowHeight;
+                retVal.HideHeader = sheetTitleAttr.HideHeader;
+            }
+
+            var sheetDataArea =
+                typeof (T).GetCustomAttributes(typeof (ExileSheetDataArea), true).First() as ExileSheetDataArea;
+            if (sheetDataArea != null)
+            {
+                retVal.StartRowNum = sheetDataArea.StartRowNum;
+                retVal.StartColumnNum = sheetDataArea.StartColumnNum;
             }
 
             foreach (var property in properties)
