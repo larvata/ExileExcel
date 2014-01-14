@@ -3,6 +3,10 @@ ExileExcel
 
 ExileExcel is an library aim for parse/output Microsoft Excel file with dead easy ways.This project is based on [.NET NPOI 2.0 RC][0] for read/write excel files.
 
+Features:
+ - Export data to xls,xlsx,docx
+ - Export with template
+
 Usage:
 -----------
 
@@ -10,26 +14,31 @@ Usage:
 
 Create your class with ExileAttribute to mapping property with excel file head text.You can define data format explicitily also.
 
-    [ExileSheetTitle(RowHeight = 40, FontHeight = 40)]
-    class DemoExileData:IExilable
+    // define data area
+    [ExileSheetDataArea(StartRowNum = 2)]
+    // hide data header which is already in template file
+    [ExileSheetTitle(HideHeader=true )]
+    public class DemoExileDataTemplate : IExilable
     {
+        // first row auto index
         [ExileColumnDataFormat(ColumnType = ExileColumnType.AutoIndex)]
-        [ExileHeaderGeneral(HeaderText = "序号", HeaderSequence = 1)]
+        [ExileHeaderGeneral(HeaderSequence = 1)]
         public int Id { get; set; }
 
-        [ExileColumnDimension(AutoFit = true,ColumnWidth = 20)]
-        [ExileHeaderGeneral(HeaderText = "学号", HeaderSequence = 1)]
+        // set width of column and autofit text
+        [ExileColumnDimension(AutoFit = true, ColumnWidth = 20)]
+        [ExileHeaderGeneral(HeaderSequence = 2)]
         public string Number { get; set; }
 
-        [ExileHeaderGeneral(HeaderText = "姓名", HeaderSequence = 2)]
+        [ExileHeaderGeneral(HeaderSequence = 3)]
         public string Name { get; set; }
 
-        [ExileHeaderGeneral(HeaderText = "分数", HeaderSequence = 3)]
+        [ExileHeaderGeneral(HeaderSequence = 4)]
         public float Score { get; set; }
-
+        
+        // define cell data format
         [ExileColumnDataFormat(ColumnCustomDataFormat = "YYYY/MM/DD HH:mm:ss")]
-        [ExileHeaderGeneral(HeaderText = "考试日期", HeaderSequence = 4)]
-        [ExileColumnDimension(AutoFit = true,ColumnWidth = 20)]
+        [ExileHeaderGeneral(HeaderSequence = 5)]
         public DateTime TestDate { get; set; }
     }
 
@@ -44,9 +53,9 @@ Parse from XLS/XLSX files.
 
 1.Construct objects form class with ExileAttribute.
 
-    var outData = new List<DemoExileData>
+    var outDataTemp = new List<DemoExileDataTemplate>
     {
-        new DemoExileData
+        new DemoExileDataTemplate
         {
             Id = 1,
             Name = "Alzzl",
@@ -54,34 +63,41 @@ Parse from XLS/XLSX files.
             Score = (float) 50.0,
             TestDate = new DateTime(2013, 1, 3)
         },
-        new DemoExileData
+        new DemoExileDataTemplate
         {
-            Id = 2,
+            Id = 1,
             Name = "Larvata",
             Number = "S0002",
             Score = (float) 84.5,
             TestDate = new DateTime(2013, 1, 5)
         },
-        new DemoExileData
+        new DemoExileDataTemplate
         {
-            Id = 3,
+            Id=1,
+            Name = "LALALA",
+            Number = "1",
+            Score = (float)100.0,
+            TestDate = new DateTime(2012,5,5)
+        },
+        new DemoExileDataTemplate
+        {
+            Id = 1,
             Name = "果子林",
             Number = "S0003",
             Score = (float) 10.5,
             TestDate = new DateTime(2013, 1, 4)
-        }
+        },
+
+
     };
 
-2.Write data to file
+2.Write data with template
 
-    const string outFilePath = @"out.docx";
-    var extractor = new ExileExtractor<DemoExileData>();
-   
-    using (var fs = new FileStream(outFilePath4, FileMode.Create))
+    const string outFilePathTemp = @"outTemplate.xls";
+    var extractorTemp = new ExileExtractor<DemoExileDataTemplate>();
+    using (var fs = new FileStream(outFilePathTemp, FileMode.Create))
     {
-        extractor.SheetName = "sheet A";
-        extractor.TitleText = "title";
-        extractor.WriteStream(outData, fs, ExileExtractTypes.Word2007OpenXML);
+        extractorTemp.WriteStream(outDataTemp, fs, ExileExtractTypes.Excel2003NPOI, @"template\template.xls");
     }
 
-[0]: https://github.com/tonyqus/npoi
+[0]: https://npoi.codeplex.com/

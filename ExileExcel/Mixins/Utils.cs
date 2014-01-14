@@ -56,7 +56,7 @@ namespace ExileExcel.Mixins
             }
 
             var sheetDataArea =
-                typeof (T).GetCustomAttributes(typeof (ExileSheetDataArea), true).First() as ExileSheetDataArea;
+                typeof (T).GetCustomAttributes(typeof (ExileSheetDataArea), true).FirstOrDefault() as ExileSheetDataArea;
             if (sheetDataArea != null)
             {
                 retVal.StartRowNum = sheetDataArea.StartRowNum;

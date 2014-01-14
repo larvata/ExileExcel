@@ -49,6 +49,7 @@ namespace ExileExcel
                 default:
                     throw new ArgumentOutOfRangeException("extractType");
             }
+           
         }
 
         private void ExcelWriteStream(IList<T> dataList, Stream stream, ExileExtractTypes extractType, string templateFilePath = "")
@@ -68,25 +69,24 @@ namespace ExileExcel
                     throw new ArgumentOutOfRangeException("extractType");
             }
 
-            if (!string.IsNullOrEmpty(templateFilePath))
+            if (string.IsNullOrEmpty(templateFilePath))
             {
-                _workbook = WorkbookFactory.Create(templateFilePath);
-                _sheet = _workbook.GetSheetAt(0);
+                _sheet = string.IsNullOrEmpty(SheetName)
+                    ? _workbook.CreateSheet()
+                    : _workbook.CreateSheet(SheetName);
             }
             else
             {
-                
-
-                _sheet = string.IsNullOrEmpty(SheetName)
-                    ? _workbook.CreateSheet()
-                    : _workbook.CreateSheet(SheetName);   
+                _workbook = WorkbookFactory.Create(templateFilePath);
+                _sheet = _workbook.GetSheetAt(0);
             }
 
 
             var extractor = new ExileExcelExtractor<T>(_sheet);
             if (!string.IsNullOrEmpty(TitleText))
                 extractor.DocumentMeta.TitleText = TitleText;
-            
+
+            extractor.DocumentMeta.IsUseTemplate = !string.IsNullOrEmpty(templateFilePath);
             extractor.FillContent(dataList);
        
             _workbook.Write(stream);

@@ -19,6 +19,7 @@ namespace ExileExcel.Common
         public int StartRowNum { get; set; }
         public int StartColumnNum { get; set; }
 
+        public bool IsUseTemplate { get; set; }
         public bool HideHeader { get; set; }
 
         public ExileDocumentMeta()

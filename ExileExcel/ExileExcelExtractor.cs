@@ -134,7 +134,6 @@ namespace ExileExcel
 
 
             // build sheet header
-            currentRowIndex++;
             var headerRow = _sheet.CreateRow(currentRowIndex);
             var columnIndex = DocumentMeta.StartColumnNum;
             
@@ -160,9 +159,15 @@ namespace ExileExcel
             }
 
             // reset currentRowIndex when use template
-            currentRowIndex = DocumentMeta.StartRowNum;
-
-
+            if (DocumentMeta.IsUseTemplate)
+            {
+                currentRowIndex = DocumentMeta.StartRowNum;
+            }
+            else
+            {
+                currentRowIndex++;
+            }
+            
             // build sheet data
             for (int i = 0; i < dataList.Count; i++)
             {
