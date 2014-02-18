@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using DocumentFormat.OpenXml;
@@ -10,7 +11,7 @@ using NPOI.XSSF.UserModel;
 
 namespace ExileExcel
 {
-    public class ExileExtractor<T> where T:IExilable
+    public class ExileExtractor<T> where T : IExilable
     {
         // npoi
         private IWorkbook _workbook;
@@ -27,32 +28,34 @@ namespace ExileExcel
 
         }
 
-        public ExileExtractor(string sheetName,string titleText):this()
+        public ExileExtractor(string sheetName, string titleText)
+            : this()
         {
             SheetName = sheetName;
             TitleText = titleText;
         }
 
-        public void WriteStream(List<T> dataList, Stream stream, ExileExtractTypes extractType,string templateFilePath="")
+        public void WriteStream(dynamic dataList, Stream stream, ExileExtractTypes extractType, string templateFilePath = "")
         {
             switch (extractType)
             {
                 case ExileExtractTypes.Excel2003NPOI:
                 case ExileExtractTypes.Excel2007NPOI:
-                    ExcelWriteStream(dataList, stream, extractType,templateFilePath);
+                    ExcelWriteStream(dataList, stream, extractType, templateFilePath);
                     break;
                 case ExileExtractTypes.Excel2007OpenXML:
                     break;
                 case ExileExtractTypes.Word2007OpenXML:
-                    WordWriteStream(dataList, stream,templateFilePath);
+                    WordWriteStream(dataList, stream, templateFilePath);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException("extractType");
             }
-           
+
         }
 
-        private void ExcelWriteStream(IList<T> dataList, Stream stream, ExileExtractTypes extractType, string templateFilePath = "")
+        // Larvata  2014-02-18 15:59:10
+        private void ExcelWriteStream(dynamic dataList, Stream stream, ExileExtractTypes extractType, string templateFilePath = "")
         {
 
             switch (extractType)
@@ -87,14 +90,19 @@ namespace ExileExcel
                 extractor.DocumentMeta.TitleText = TitleText;
 
             extractor.DocumentMeta.IsUseTemplate = !string.IsNullOrEmpty(templateFilePath);
+
+            if (dataList is IList)
+            {
+
+            }
             extractor.FillContent(dataList);
-       
+
             _workbook.Write(stream);
         }
 
-        private void WordWriteStream(IList<T> dataList, Stream stream,string templateFilePath="")
+        private void WordWriteStream(IList<T> dataList, Stream stream, string templateFilePath = "")
         {
-            using(var ms=new MemoryStream())
+            using (var ms = new MemoryStream())
             {
                 using (var wordDocument = WordprocessingDocument.Create(ms, WordprocessingDocumentType.Document))
                 {

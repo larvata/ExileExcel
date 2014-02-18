@@ -10,7 +10,7 @@ using NPOI.SS.Util;
 
 namespace ExileExcel
 {
-    internal class ExileExcelExtractor<T> : IExtractor<T> where T:IExilable
+    internal class ExileExcelExtractor<T> : IExtractor<T> where T : IExilable
     {
         internal ExileDocumentMeta DocumentMeta { get; set; }
         private readonly Dictionary<string, ICellStyle> _cellFormatCache;
@@ -63,7 +63,7 @@ namespace ExileExcel
                 }
                 else
                 {
-                    style.DataFormat = (short) formatId;
+                    style.DataFormat = (short)formatId;
                 }
                 _cellFormatCache[cellDataFormatString] = style;
             }
@@ -85,7 +85,7 @@ namespace ExileExcel
             ExileColumnDataFormatAttribute attribute;
             if (!_dataFormatAttr.ContainsKey(headerText))
             {
-                attribute = Utils.GetTypeAttribute(typeof (T), headerText) as ExileColumnDataFormatAttribute;
+                attribute = Utils.GetTypeAttribute(typeof(T), headerText) as ExileColumnDataFormatAttribute;
                 _dataFormatAttr.Add(headerText, attribute);
             }
             else
@@ -93,6 +93,30 @@ namespace ExileExcel
                 attribute = _dataFormatAttr[headerText];
             }
             return attribute;
+        }
+
+        // Larvata  2014-02-18 15:11:30
+        public void FillContent(dynamic data)
+        {
+//            var rowNum = 0;
+            for (var rowNum = 0; rowNum <= _sheet.LastRowNum; rowNum++)
+            {
+                var row = _sheet.GetRow(rowNum);
+                if (row==null)continue;
+                for (var cellNum = 0; cellNum <= row.LastCellNum; cellNum++)
+                {
+                    var cell = row.GetCell(cellNum);
+                    if (cell==null|| cell.CellType != CellType.String) continue;
+                    var stringVal = cell.StringCellValue;
+                    if (stringVal.StartsWith("#{") && stringVal.EndsWith("}"))
+                    {
+                        stringVal = stringVal.Substring(2).Substring(0, stringVal.Length - 3);
+                        var val = Utils.GetPropValue(data, stringVal);
+                        cell.SetCellValue(val);
+                    }
+                }
+            }
+
         }
 
         public void FillContent(IList<T> dataList)
@@ -103,17 +127,17 @@ namespace ExileExcel
             // todo cause file format destory on npoi rc 2.0.6
             // set print margin
             //_sheet.SetMargin(MarginType.TopMargin, 0);
-//            _sheet.SetMargin(MarginType.BottomMargin, 0);
-//            _sheet.SetMargin(MarginType.LeftMargin, 0);
-//            _sheet.SetMargin(MarginType.RightMargin, 0);
+            //            _sheet.SetMargin(MarginType.BottomMargin, 0);
+            //            _sheet.SetMargin(MarginType.LeftMargin, 0);
+            //            _sheet.SetMargin(MarginType.RightMargin, 0);
             _sheet.PrintSetup.Scale = 100;
             // set paper size as A4
-            _sheet.PrintSetup.PaperSize=9;
+            _sheet.PrintSetup.PaperSize = 9;
 
             // todo remove visibility from here use it from headerAttribute
             // bulid sheet title
             var titleRow = _sheet.CreateRow(currentRowIndex);
-            currentRowIndex ++;
+            currentRowIndex++;
 
             var titleCell = titleRow.CreateCell(0);
             var headerstyle = _sheet.Workbook.CreateCellStyle();
@@ -136,7 +160,7 @@ namespace ExileExcel
             // build sheet header
             var headerRow = _sheet.CreateRow(currentRowIndex);
             var columnIndex = DocumentMeta.StartColumnNum;
-            
+
             foreach (var h in DocumentMeta.Headers)
             {
                 // if showHeader set as false only caculate counts of headers
@@ -167,16 +191,16 @@ namespace ExileExcel
             {
                 currentRowIndex++;
             }
-            
+
             // build sheet data
             for (int i = 0; i < dataList.Count; i++)
             {
                 var dataRow = _sheet.CreateRow(i + currentRowIndex);
                 //set row height
-//                                if (DocumentMeta.RowHeight!=0)
-//                                {
-//                                    dataRow.HeightInPoints = DocumentMeta.RowHeight;
-//                                }
+                //                                if (DocumentMeta.RowHeight!=0)
+                //                                {
+                //                                    dataRow.HeightInPoints = DocumentMeta.RowHeight;
+                //                                }
 
                 columnIndex = DocumentMeta.StartColumnNum;
                 foreach (var h in DocumentMeta.Headers)

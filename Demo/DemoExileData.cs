@@ -5,13 +5,13 @@ using ExileExcel.Attribute;
 namespace Demo
 {
     [ExileSheetTitle(RowHeight = 40, FontHeight = 40)]
-    class DemoExileData:IExilable
+    public class DemoExileData : IExilable
     {
         [ExileColumnDataFormat(ColumnType = ExileColumnType.AutoIndex)]
         [ExileHeaderGeneral(HeaderText = "序号", HeaderSequence = 1)]
         public int Id { get; set; }
 
-        [ExileColumnDimension(AutoFit = true,ColumnWidth = 20)]
+        [ExileColumnDimension(AutoFit = true, ColumnWidth = 20)]
         [ExileHeaderGeneral(HeaderText = "学号", HeaderSequence = 2)]
         public string Number { get; set; }
 
@@ -23,7 +23,7 @@ namespace Demo
 
         [ExileColumnDataFormat(ColumnCustomDataFormat = "YYYY/MM/DD HH:mm:ss")]
         [ExileHeaderGeneral(HeaderText = "考试日期", HeaderSequence = 5)]
-        [ExileColumnDimension(AutoFit = true,ColumnWidth = 20)]
+        [ExileColumnDimension(AutoFit = true, ColumnWidth = 20)]
         public DateTime TestDate { get; set; }
     }
 

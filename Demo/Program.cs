@@ -11,6 +11,8 @@ namespace Demo
     {
         private static void Main(string[] args)
         {
+
+            
             #region Extract by create new file
 
             var outData = new List<DemoExileData>
@@ -62,7 +64,7 @@ namespace Demo
             #endregion
 
             #region Extract by template
-            
+
             var outDataTemp = new List<DemoExileDataTemplate>
             {
                 new DemoExileDataTemplate
@@ -108,8 +110,29 @@ namespace Demo
                 extractorTemp.WriteStream(outDataTemp, fs, ExileExtractTypes.Excel2003NPOI, @"template\template.xls");
             }
             #endregion
+            
 
 
+            #region Extract by template use anonymous type data
+
+            var wotaMix = new
+            {
+                Tiger = "Tiger1",
+                Fire = "Fire2",
+                Cyber = "Cyber3",
+                Fiber = "Fiber4",
+                Diver = "Diver5",
+                Viber = "Viber6"
+            };
+
+            const string outFilePathTempAnonymous = @"outTemplateAnonymous.xls";
+            var extractorTempAnonymous = new ExileExtractor<DemoExileDataTemplate>();
+            using (var fs = new FileStream(outFilePathTempAnonymous, FileMode.Create))
+            {
+                extractorTempAnonymous.WriteStream(wotaMix, fs, ExileExtractTypes.Excel2003NPOI, @"template\templateAnonymous.xls");
+            }
+
+            #endregion
         }
     }
 }

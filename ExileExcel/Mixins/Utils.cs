@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using ExileExcel.Attribute;
 using ExileExcel.Common;
 
@@ -43,12 +44,12 @@ namespace ExileExcel.Mixins
 
             //if (!properties.Any()) throw new Exception("MATCHING TYPE WITHOUT ATTRIBUTE ExilePropertyAttribute");
 
-            var sheetTitleAttr=
+            var sheetTitleAttr =
                typeof(T).GetCustomAttributes(typeof(ExileSheetTitleAttribute), true).FirstOrDefault() as ExileSheetTitleAttribute;
 
-            retVal.MatchedType = typeof (T);
+            retVal.MatchedType = typeof(T);
 
-            if (sheetTitleAttr!=null)
+            if (sheetTitleAttr != null)
             {
                 retVal.TitleFontHeight = sheetTitleAttr.FontHeight;
                 retVal.TitleRowHeight = sheetTitleAttr.RowHeight;
@@ -56,7 +57,7 @@ namespace ExileExcel.Mixins
             }
 
             var sheetDataArea =
-                typeof (T).GetCustomAttributes(typeof (ExileSheetDataArea), true).FirstOrDefault() as ExileSheetDataArea;
+                typeof(T).GetCustomAttributes(typeof(ExileSheetDataArea), true).FirstOrDefault() as ExileSheetDataArea;
             if (sheetDataArea != null)
             {
                 retVal.StartRowNum = sheetDataArea.StartRowNum;
@@ -67,7 +68,7 @@ namespace ExileExcel.Mixins
             {
 
 
-                var colDataFormatAttr = 
+                var colDataFormatAttr =
                     property.GetCustomAttributes(typeof(ExileColumnDataFormatAttribute), true).FirstOrDefault() as ExileColumnDataFormatAttribute;
 
                 var colDimAttr
@@ -76,7 +77,7 @@ namespace ExileExcel.Mixins
                 var headerGeneralAttr
                     = property.GetCustomAttributes(typeof(ExileHeaderGeneralAttribute), true).FirstOrDefault() as ExileHeaderGeneralAttribute;
 
-                var headerMeta = new ExileHeaderMeta {PropertyName = property.Name};
+                var headerMeta = new ExileHeaderMeta { PropertyName = property.Name };
                 if (colDataFormatAttr != null)
                 {
                     headerMeta.BuiltinFormat = colDataFormatAttr.ColumnBulitinDataFormat;
@@ -133,6 +134,20 @@ namespace ExileExcel.Mixins
                 }
             }
         }
+
+        public static bool CheckIfAnonymousType(Type type)
+        {
+            if (type == null)
+                throw new ArgumentNullException("type");
+
+            // HACK: The only way to detect anonymous types right now.
+            return System.Attribute.IsDefined(type, typeof(CompilerGeneratedAttribute), false)
+                && type.IsGenericType && type.Name.Contains("AnonymousType")
+                && (type.Name.StartsWith("<>") || type.Name.StartsWith("VB$"))
+                && (type.Attributes & TypeAttributes.NotPublic) == TypeAttributes.NotPublic;
+        }
+
+
 
 
     }
