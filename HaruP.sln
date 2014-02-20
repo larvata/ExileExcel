@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HaruP", "HaruP\HaruP.csproj", "{4D3508EB-4895-4E3B-BDF2-2119F6DC481F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HaruP.PlayGround", "HaruP.PlayGround\HaruP.PlayGround.csproj", "{63924B69-21D2-47E6-88AB-A655159281B4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4D3508EB-4895-4E3B-BDF2-2119F6DC481F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D3508EB-4895-4E3B-BDF2-2119F6DC481F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D3508EB-4895-4E3B-BDF2-2119F6DC481F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D3508EB-4895-4E3B-BDF2-2119F6DC481F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{63924B69-21D2-47E6-88AB-A655159281B4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{63924B69-21D2-47E6-88AB-A655159281B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{63924B69-21D2-47E6-88AB-A655159281B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{63924B69-21D2-47E6-88AB-A655159281B4}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
