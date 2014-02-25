@@ -12,22 +12,7 @@ namespace HaruP.PlayGround
             
             var metaVertical = new ExcelMeta {Orientation = Orientation.Vertical};
 
-            #region single anonymous data
-            var wotaMix = new
-            {
-                Tiger = 1,
-                Fire = "Fire1",
-                Cyber = DateTime.Now,
-                Fiber = (double) 2,
-                Diver = (Single) 3,
-                Viber = "Viber1"
-            };
-            var e = new ExcelExtractor();
-            using (var fs = new FileStream("Single.xls", FileMode.Create))
-            {
-                e.ExcelWriteStream(wotaMix, fs, @"template\templateSingle.xls");
-            }
-            #endregion
+
 
             #region anonymous list
             var wotaMixList = new List<dynamic>
@@ -67,8 +52,6 @@ namespace HaruP.PlayGround
             }
             #endregion
 
-
-
             #region strong typed list
             var wotaMixList2 = new List<WotaMix>
             {
@@ -100,22 +83,6 @@ namespace HaruP.PlayGround
 
             #endregion
 
-            #region single anonymous data
-            var wotaMix2 = new WotaMix
-            {
-                Tiger = 100,
-                Fire = "Fire100",
-                Cyber = DateTime.Now,
-                Fiber = 200,
-                Diver = 300,
-                Viber = "Viber100"
-            };
-            var h = new ExcelExtractor();
-            using (var fs = new FileStream("Single2.xls", FileMode.Create))
-            {
-                h.ExcelWriteStream(wotaMix2, fs, @"template\templateSingle.xls");
-            }
-            #endregion
         }
     }
 }

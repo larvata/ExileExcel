@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using HaruP.Common;
 using HaruP.Mixins;
 using NPOI.OpenXml4Net.Exceptions;
 using NPOI.SS.Formula.Functions;
 using NPOI.SS.UserModel;
+using System.Runtime.CompilerServices;
 
 namespace HaruP
 {
@@ -24,23 +26,15 @@ namespace HaruP
            //excelMeta.Orientation=Orientation.Horizontal;
         }
 
-        private void FillContent(dynamic data)
+        private void FillContent(IList data) 
         {
-
-            if (data is IList || data is IEnumerable)
+            for (var i = 0; i < data.Count; i++)
             {
-                for (var i = 0; i < data.Count; i++)
-                {
-                    WriteSingle(data[i],i);
-                }
-            }
-            else
-            {
-                WriteSingle(data, 0);
+                WriteSingle(data[i],i);
             }
         }
 
-        private void WriteSingle(dynamic singleData, int offset)
+        private void WriteSingle(Object singleData, int offset)
         {
 
             var offsetRow = excelMeta.Orientation == Orientation.Horizontal ? offset : 0;
@@ -81,7 +75,7 @@ namespace HaruP
             }
         }
 
-        public void ExcelWriteStream( dynamic data, Stream stream, string templatePath,ExcelMeta excelMeta=null)
+        public void ExcelWriteStream(IList data, Stream stream, string templatePath,ExcelMeta excelMeta=null)
         {
             #region Argument check
 
