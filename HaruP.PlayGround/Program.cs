@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using HaruP.Common;
+﻿using System.Collections.Generic;
 
 namespace HaruP.PlayGround
 {
@@ -9,77 +6,89 @@ namespace HaruP.PlayGround
     {
         private static void Main(string[] args)
         {
-            
-            var metaVertical = new ExcelMeta {Orientation = Orientation.Vertical};
-
-
 
             #region anonymous list
-            var wotaMixList = new List<dynamic>
+            var list = new List<dynamic>
             {
                 new
                 {
-                    Tiger = 1,
-                    Fire = "Fire1",
-                    Cyber = DateTime.Now,
-                    Fiber = (double) 2,
-                    Diver = (Single) 3,
-                    Viber = "Viber1"
-                },
+                    Id = 1,
+                    Company = "单位1",
+                    Project = "项目",
+                    Town = "镇",
+                    ProjectType = "项目类别",
+                    Amount = 100,
+                    Region = 900,
+                    Progress = "呵呵呵",
+                    Target = "哈哈哈",
+                    Month1 = "一月内容",
+                    Month2 = "二月内容",
+                }
+                ,
                 new
                 {
-                    Tiger = 4,
-                    Cyber = DateTime.Now.AddDays(1),
-                    Fiber = (double) 5,
-                    Diver = (Single) 6,
-                    Viber = "Viber2"
-                },
-                new
-                {
-                    Tiger = 7,
-                    Fire = "Fire3",
-                    Cyber = DateTime.Now.AddDays(2),
-                    Fiber = (double) 8,
-                    Diver = (Single) 9,
-                    Viber = "Viber3"
+                    Id = 2,
+                    Company = "单位2",
+                    Project = "项目2",
+                    Town = "镇2",
+                    ProjectType = "项目类别2",
+                    Amount = 1002,
+                    Region = 9002,
+                    Progress = "呵呵呵2",
+                    Target = "哈哈哈2",
+                    Month1 = "一月内容2",
+                    Month2 = "二月内容2"
                 }
             };
 
-            var f = new ExcelExtractor();
-            using (var fs = new FileStream("Vertical.xls", FileMode.Create))
+            var list2 = new List<dynamic>
             {
-                f.ExcelWriteStream(wotaMixList, fs, @"template\templateVertical.xls", metaVertical);
-            }
-            #endregion
-
-            #region strong typed list
-            var wotaMixList2 = new List<WotaMix>
-            {
-                new WotaMix
+                new
                 {
-                    Tiger = 10,
-                    Fire = "Fire4",
-                    Cyber = DateTime.Now.AddDays(3),
-                    Fiber = 11,
-                    Diver = 12,
-                    Viber = "Viber4"
-                },
-                new WotaMix
+                    Id2 = 1,
+                    Company2 = "单位a",
+                    Project2 = "项目a",
+                    Town2 = "镇a",
+                    ProjectType2 = "项目类别a",
+                    Amount2 = 1009,
+                    Region2 = 9009,
+                    Progress2 = "呵呵呵a",
+                    Target2 = "哈哈哈a",
+                    Month1_2 = "一月内容a",
+                    Month2_2 = "二月内容a",
+                    Month3_2 = "三月内容2b"
+                }
+                ,
+                new
                 {
-                    Tiger = 13,
-                    Fire = "Fire5",
-                    Cyber = DateTime.Now.AddDays(4),
-                    Fiber = 14,
-                    Diver = 15,
-                    Viber = "Viber5"
+                    Id2 = 2,
+                    Company2 = "单位2b",
+                    Project2 = "项目2b",
+                    Town2 = "镇2b",
+                    ProjectType2 = "项目类别2b",
+                    Amount2 = 10029,
+                    Region2 = 90029,
+                    Progress2 = "呵呵呵2b",
+                    Target2 = "哈哈哈2b",
+                    Month1_2 = "一月内容2b",
+                    Month2_2 = "二月内容2b",
+                    Month3_2 = "三月内容2b"
                 }
             };
 
-            var g = new ExcelExtractor();
-            using (var fs = new FileStream("Horizontal.xls", FileMode.Create))
+            var stat = new
             {
-                g.ExcelWriteStream(wotaMixList2, fs, @"template\templateHorizontal.xls");
-            }
+                PCount = string.Format("区配合项目（{0}个）", list.Count),
+                SCount = string.Format("区实施项目（{0}个）", list2.Count),
+            };
+
+
+            var extractor = new ExcelExtractor(@"template\t2.xls");
+            extractor.PutData(list);
+            extractor.PutData(list2);
+            extractor.PutData(stat);
+
+            extractor.Write("o2.xls");
 
             #endregion
 

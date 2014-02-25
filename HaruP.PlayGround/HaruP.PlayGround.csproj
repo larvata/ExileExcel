@@ -52,13 +52,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Template\templateHorizontal.xls">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Template\templateSingle.xls">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Template\templateVertical.xls">
+    <None Include="Template\t2.xls">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

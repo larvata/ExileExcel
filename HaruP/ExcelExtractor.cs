@@ -1,37 +1,48 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.IO;
 using HaruP.Common;
 using HaruP.Mixins;
 using NPOI.OpenXml4Net.Exceptions;
-using NPOI.SS.Formula.Functions;
+using NPOI.SS.Formula;
 using NPOI.SS.UserModel;
-using System.Runtime.CompilerServices;
 
 namespace HaruP
 {
     public class ExcelExtractor 
     {
         // npoi
-        private IWorkbook workbook;
+        private readonly IWorkbook workbook;
         private ISheet sheet;
         private TemplateMeta templateMeta;
 
         private ExcelMeta excelMeta;
 
-        public ExcelExtractor()
+        public ExcelExtractor(string templatePath)
         {
-           excelMeta=new ExcelMeta();
-           //excelMeta.Orientation=Orientation.Horizontal;
-        }
+            #region Argument check
 
-        private void FillContent(IList data) 
-        {
-            for (var i = 0; i < data.Count; i++)
+            if (string.IsNullOrEmpty(templatePath))
             {
-                WriteSingle(data[i],i);
+                throw new ArgumentOutOfRangeException("templatePath", "template path not be defined");
             }
+
+            #endregion
+
+           try
+           {
+               workbook = WorkbookFactory.Create(templatePath);
+           }
+           catch (WorkbookNotFoundException ex)
+           {
+
+           }
+
+           excelMeta = new ExcelMeta();
+           //excelMeta.Orientation=Orientation.Horizontal;
+
+           // get tags from template
+           ParseTemplateMeta();
         }
 
         private void WriteSingle(Object singleData, int offset)
@@ -40,16 +51,29 @@ namespace HaruP
             var offsetRow = excelMeta.Orientation == Orientation.Horizontal ? offset : 0;
             var offsetColumn = excelMeta.Orientation == Orientation.Vertical ? offset : 0;
 
+            var isFirst = true;
             foreach (var t in templateMeta.Tags)
             {
-                var row = (sheet.LastRowNum < t.Value.RowIndex + offsetRow)
-                    ? sheet.CreateRow(t.Value.RowIndex + offsetRow)
-                    : sheet.GetRow(t.Value.RowIndex + offsetRow);
+                object val;
+                try
+                {
+                    val = Utils.GetPropValue(singleData, t.Key);
+                }
+                catch (Exception)
+                {
+                    // property not in current data object 
+                    continue;
+                }
 
-                var cell = (row.LastCellNum <= t.Value.ColumnIndex + offsetColumn)
-                    ? row.CreateCell(t.Value.ColumnIndex + offsetColumn)
-                    : row.GetCell(t.Value.ColumnIndex + offsetColumn);
-                var val = Utils.GetPropValue(singleData, t.Key);
+                var row = isFirst && (offsetRow>0)
+                    ? sheet.GetRow(t.Value.RowIndex).CopyRowTo(t.Value.RowIndex + offsetRow)
+                    : sheet.GetRow(t.Value.RowIndex+offsetRow);
+
+                var cell = isFirst && (offsetColumn>0)
+                    ? row.GetCell(t.Value.ColumnIndex).CopyCellTo(t.Value.ColumnIndex + offsetColumn)
+                    : row.GetCell(t.Value.ColumnIndex+offsetColumn);
+
+                isFirst = false;
 
                 // fill value
                 if (val == null)
@@ -71,11 +95,32 @@ namespace HaruP
 
                 // copy cell format to new created
                 cell.CellStyle =t.Value.CellStyle;
+                
                 sheet.SetColumnWidth(cell.ColumnIndex,sheet.GetColumnWidth(t.Value.ColumnIndex));
             }
         }
 
-        public void ExcelWriteStream(IList data, Stream stream, string templatePath,ExcelMeta excelMeta=null)
+        public void PutData(IList data, ExcelMeta meta = null)
+        {
+            this.excelMeta = meta ?? excelMeta;
+
+            // fill data
+            for (var i = 0; i < data.Count; i++)
+            {
+                WriteSingle(data[i], i);
+            }
+        }
+
+        public void PutData(object data, ExcelMeta meta = null)
+        {
+            this.excelMeta = meta ?? excelMeta;
+
+            // fill data
+            WriteSingle(data, 0);
+            
+        }
+
+        public void Write(Stream stream)
         {
             #region Argument check
 
@@ -83,34 +128,19 @@ namespace HaruP
             {
                 throw new ArgumentNullException("stream");
             }
-            if (string.IsNullOrEmpty(templatePath))
-            {
-                throw new ArgumentOutOfRangeException("templatePath", "template path not be defined");
-            }
 
             #endregion
 
-            if (excelMeta!=null)
-            {
-                this.excelMeta = excelMeta;
-            }
-            
-            try
-            {
-                workbook = WorkbookFactory.Create(templatePath);
-            }
-            catch (Exception)
-            {
-            }
-
-            // get tags from template
-            ParseTemplateMeta();
-
-            // fill data
-            FillContent(data);
-
             // write to stream
             workbook.Write(stream);
+        }
+
+        public void Write(string filePath)
+        {
+            using (var fs=new FileStream(filePath, FileMode.Create))
+            {
+                this.Write(fs);
+            }
         }
 
         private void ParseTemplateMeta()

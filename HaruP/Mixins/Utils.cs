@@ -25,8 +25,9 @@ namespace HaruP.Mixins
             {
                 ret =src.GetType().GetProperty(propName).GetValue(src, null);
             }
-            catch
+            catch(Exception ex)
             {
+                throw ex;
             }
 
             return ret;
