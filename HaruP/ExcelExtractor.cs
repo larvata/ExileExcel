@@ -143,6 +143,8 @@ namespace HaruP
             }
         }
 
+
+
         private void ParseTemplateMeta()
         {
             templateMeta = new TemplateMeta();
@@ -166,6 +168,9 @@ namespace HaruP
                     strVal = strVal.Substring(2).Substring(0, strVal.Length - 3);
                     if (string.IsNullOrEmpty(strVal)) continue;
                     templateMeta.Tags.Add( strVal,cell);
+
+                    // clear cell tags
+                    cell.SetCellValue(string.Empty);
                 }
             }
 
