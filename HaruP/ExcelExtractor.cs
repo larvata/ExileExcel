@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Runtime.Remoting.Messaging;
+using System.Text.RegularExpressions;
 using HaruP.Common;
 using HaruP.Mixins;
 using NPOI.OpenXml4Net.Exceptions;
@@ -14,8 +18,6 @@ namespace HaruP
         // npoi
         private readonly IWorkbook workbook;
         private ISheet sheet;
-        private TemplateMeta templateMeta;
-
         private ExcelMeta excelMeta;
 
         public ExcelExtractor(string templatePath)
@@ -52,12 +54,18 @@ namespace HaruP
             var offsetColumn = excelMeta.Orientation == Orientation.Vertical ? offset : 0;
 
             var isFirst = true;
-            foreach (var t in templateMeta.Tags)
+            var matchedTags = string.IsNullOrEmpty(excelMeta.Namespace)
+                ? excelMeta.Tags.Where(t => !t.TagId.Contains(".")).ToList()
+                : excelMeta.Tags.Where(t => t.TagId.StartsWith(excelMeta.Namespace)).ToList();
+
+
+            foreach (var t in matchedTags)
             {
-                object val;
+                object cellValue;
+
                 try
                 {
-                    val = Utils.GetPropValue(singleData, t.Key);
+                    cellValue = Utils.GetPropValue(singleData, t.TagId.Remove(0, excelMeta.Namespace.Length));
                 }
                 catch (Exception)
                 {
@@ -65,59 +73,89 @@ namespace HaruP
                     continue;
                 }
 
-                var row = isFirst && (offsetRow>0)
-                    ? sheet.GetRow(t.Value.RowIndex).CopyRowTo(t.Value.RowIndex + offsetRow)
-                    : sheet.GetRow(t.Value.RowIndex+offsetRow);
+                var row=isFirst && (offsetRow > 0)
+                    ?sheet.GetRow(t.Cell.RowIndex).CopyRowTo(t.Cell.RowIndex + offsetRow)
+                    :sheet.GetRow(t.Cell.RowIndex + offsetRow);
 
-                var cell = isFirst && (offsetColumn>0)
-                    ? row.GetCell(t.Value.ColumnIndex).CopyCellTo(t.Value.ColumnIndex + offsetColumn)
-                    : row.GetCell(t.Value.ColumnIndex+offsetColumn);
+
+                var cell = isFirst && (offsetColumn > 0)
+                    ? row.GetCell(t.Cell.ColumnIndex).CopyCellTo(t.Cell.ColumnIndex + offsetColumn)
+                    : row.GetCell(t.Cell.ColumnIndex + offsetColumn);
 
                 isFirst = false;
 
                 // fill value
-                if (val == null)
+                if (cellValue == null)
                 {
                     cell.SetCellValue(string.Empty);
                 }
-                else if (val is DateTime)
+                else if (cellValue is DateTime)
                 {
-                    cell.SetCellValue((DateTime) val);
+                    cell.SetCellValue((DateTime) cellValue);
                 }
-                else if (val is double || val is float || val is int)
+                else if (cellValue is double || cellValue is float || cellValue is int)
                 {
-                    cell.SetCellValue(Convert.ToDouble(val));
+                    cell.SetCellValue(Convert.ToDouble(cellValue));
                 }
                 else
                 {
-                    cell.SetCellValue(val.ToString());
+                    cell.SetCellValue(cellValue.ToString());
                 }
 
                 // copy cell format to new created
-                cell.CellStyle =t.Value.CellStyle;
-                
-                sheet.SetColumnWidth(cell.ColumnIndex,sheet.GetColumnWidth(t.Value.ColumnIndex));
+                cell.CellStyle = t.Cell.CellStyle;
+
+                sheet.SetColumnWidth(cell.ColumnIndex, sheet.GetColumnWidth(t.Cell.ColumnIndex));
             }
         }
 
-        public void PutData(IList data, ExcelMeta meta = null)
-        {
-            this.excelMeta = meta ?? excelMeta;
 
+        public void PutData(IList data)
+        {
             // fill data
             for (var i = 0; i < data.Count; i++)
             {
                 WriteSingle(data[i], i);
             }
+
+            // reset namespace
+            this.excelMeta.Namespace = string.Empty;
         }
 
-        public void PutData(object data, ExcelMeta meta = null)
+        public void PutData(IList data, ExcelMeta meta)
         {
             this.excelMeta = meta ?? excelMeta;
+            PutData(data);
 
+        }
+
+        public void PutData(IList data, string tagNamespace)
+        {
+            this.excelMeta.Namespace = tagNamespace;
+            PutData(data);
+        }
+
+        public void PutData(object data)
+        {
             // fill data
             WriteSingle(data, 0);
-            
+
+            // reset namespace
+            this.excelMeta.Namespace = string.Empty;
+        }
+
+        public void PutData(object data, ExcelMeta meta)
+        {
+            this.excelMeta = meta ?? excelMeta;
+            // fill data
+            PutData(data);
+        }
+
+        public void PutData(object data, string tagNamespace)
+        {
+            this.excelMeta.Namespace = tagNamespace;
+            // fill data
+            PutData(data);
         }
 
         public void Write(Stream stream)
@@ -143,11 +181,8 @@ namespace HaruP
             }
         }
 
-
-
         private void ParseTemplateMeta()
         {
-            templateMeta = new TemplateMeta();
             sheet = workbook.GetSheetAt(0);
             for (var rowNum = 0; rowNum <= sheet.LastRowNum; rowNum++)
             {
@@ -163,20 +198,19 @@ namespace HaruP
                     if (cell == null || cell.CellType != CellType.String) continue;
 
                     var strVal = cell.StringCellValue;
-                    if (!strVal.StartsWith("#{") || !strVal.EndsWith("}")) continue;
 
-                    strVal = strVal.Substring(2).Substring(0, strVal.Length - 3);
-                    if (string.IsNullOrEmpty(strVal)) continue;
-                    templateMeta.Tags.Add( strVal,cell);
+                    var tagId = Regex.Match(strVal, @"#{([\w\.]+)}").Groups[1].Value;
 
-                    // clear cell tags
-                    cell.SetCellValue(string.Empty);
+                    if (string.IsNullOrEmpty(tagId)) continue;
+
+                    excelMeta.Tags.Add(new TagMeta
+                    {
+                        Cell = cell,
+                        TagId = tagId,
+                        TemplateText = strVal
+                    });
+
                 }
-            }
-
-            if (templateMeta.Tags.Count==0)
-            {
-                throw new InvalidFormatException("cant parse template tags format error. wrap tag with #{}, e.g. #{The Tag}");
             }
         }
 

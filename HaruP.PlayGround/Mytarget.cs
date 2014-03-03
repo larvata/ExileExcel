@@ -7,6 +7,9 @@ namespace HaruP.PlayGround
 {
     public class Mytarget
     {
+        public int year { get; set; }
+        public int month { get; set; }
+        public int days { get; set; }
         public string Id { get; set; }
         public string AnnualTarget { get; set; }//年度目标
         public string PName { get; set; }//项目名称
