@@ -8,6 +8,8 @@ namespace HaruP.Common
     {
         public Orientation Orientation { get; set; }
 
+        public int SheetIndex { get; set; }
+
         private string _namespace=string.Empty;
         public string Namespace
         {

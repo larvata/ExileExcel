@@ -43,8 +43,6 @@ namespace HaruP
            excelMeta = new ExcelMeta();
            //excelMeta.Orientation=Orientation.Horizontal;
 
-           // get tags from template
-           ParseTemplateMeta();
         }
 
         private void WriteSingle(Object singleData, int offset)
@@ -112,6 +110,9 @@ namespace HaruP
 
         public void PutData(IList data)
         {
+            // get tags from template
+            ParseTemplateMeta(this.excelMeta.SheetIndex);
+
             // fill data
             for (var i = 0; i < data.Count; i++)
             {
@@ -129,6 +130,12 @@ namespace HaruP
 
         }
 
+        public void PutData(IList data, int sheetIndex)
+        {
+            this.excelMeta.SheetIndex=sheetIndex;
+            PutData(data);
+        }
+
         public void PutData(IList data, string tagNamespace)
         {
             this.excelMeta.Namespace = tagNamespace;
@@ -137,6 +144,9 @@ namespace HaruP
 
         public void PutData(object data)
         {
+            // get tags from template
+            ParseTemplateMeta(this.excelMeta.SheetIndex);
+
             // fill data
             WriteSingle(data, 0);
 
@@ -147,6 +157,13 @@ namespace HaruP
         public void PutData(object data, ExcelMeta meta)
         {
             this.excelMeta = meta ?? excelMeta;
+            // fill data
+            PutData(data);
+        }
+
+        public void PutData(object data, int sheetIndex)
+        {
+            this.excelMeta.SheetIndex = sheetIndex;
             // fill data
             PutData(data);
         }
@@ -181,9 +198,9 @@ namespace HaruP
             }
         }
 
-        private void ParseTemplateMeta()
+        private void ParseTemplateMeta(int sheetIndex)
         {
-            sheet = workbook.GetSheetAt(0);
+            sheet = workbook.GetSheetAt(sheetIndex);
             for (var rowNum = 0; rowNum <= sheet.LastRowNum; rowNum++)
             {
                 var row = sheet.GetRow(rowNum);

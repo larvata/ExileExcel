@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using HaruP.Common;
 
 namespace HaruP.PlayGround
 {
@@ -84,49 +85,29 @@ namespace HaruP.PlayGround
             };
 
             var extractor = new ExcelExtractor(@"template\t2.xls");
-            extractor.PutData(list);
-            extractor.PutData(list2,"S");
-            extractor.PutData(stat);
-            extractor.PutData(sstat,"S");
+            extractor.PutData(list,new ExcelMeta
+            {
+                SheetIndex = 1
+            });
+            extractor.PutData(list2, new ExcelMeta
+            {
+                Namespace = "S",
+                SheetIndex = 1
+            });
+            extractor.PutData(stat, new ExcelMeta
+            {
+                SheetIndex = 1
+            });
+            extractor.PutData(sstat, new ExcelMeta
+            {
+                Namespace = "S",
+                SheetIndex = 1
+            });
+
+
             extractor.Write("o2.xls");
-//
             #endregion
 
-            #region strong typed
-
-//
-//            var t = new Mytarget()
-//            {
-//                year=2014,
-//                month = 12,
-//                days = 13,
-//                Id = "Id",
-//                AnnualTarget = "AnnualTarget",
-//                PName = "PName",
-//                ConstructionUnit = "ConstructionUnit",
-//                Town = "Town",
-//                Type = "Type",
-//                TotalInvestment = "TotalInvestment",
-//                GFA = "GFA",
-//                Progress = "Progress",
-//                January = "January",
-//                February = "February",
-//                March = "March",
-//                April = "April",
-//                May = "May",
-//                June = "June",
-//                July = "July",
-//                August = "August",
-//                September = "September",
-//                October = "October",
-//                November = "November",
-//                December = "December"
-//            };
-//            var ext = new ExcelExtractor(@"template\t1.xls");
-//            ext.PutData(t);
-//            ext.Write("03.xls");
-
-            #endregion
         }
     }
 }
