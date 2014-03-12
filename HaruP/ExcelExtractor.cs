@@ -72,7 +72,7 @@ namespace HaruP
                 }
 
                 var row=isFirst && (offsetRow > 0)
-                    ?sheet.GetRow(t.Cell.RowIndex).CopyRowTo(t.Cell.RowIndex + offsetRow)
+                    ? sheet.GetRow(t.Cell.RowIndex).CopyRowTo(t.Cell.RowIndex + offsetRow).CellFormulaShift(1)
                     :sheet.GetRow(t.Cell.RowIndex + offsetRow);
 
 
@@ -152,6 +152,7 @@ namespace HaruP
 
             // reset namespace
             this.excelMeta.Namespace = string.Empty;
+
         }
 
         public void PutData(object data, ExcelMeta meta)
@@ -186,14 +187,19 @@ namespace HaruP
 
             #endregion
 
+            // recalculate formula
+            sheet.ForceFormulaRecalculation = true;
+
             // write to stream
             workbook.Write(stream);
         }
 
         public void Write(string filePath)
         {
+
             using (var fs=new FileStream(filePath, FileMode.Create))
             {
+
                 this.Write(fs);
             }
         }
@@ -201,6 +207,7 @@ namespace HaruP
         private void ParseTemplateMeta(int sheetIndex)
         {
             sheet = workbook.GetSheetAt(sheetIndex);
+
             for (var rowNum = 0; rowNum <= sheet.LastRowNum; rowNum++)
             {
                 var row = sheet.GetRow(rowNum);

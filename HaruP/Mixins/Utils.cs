@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
+using NPOI.SS.Formula.Functions;
+using NPOI.SS.UserModel;
 
 namespace HaruP.Mixins
 {
@@ -36,6 +39,21 @@ namespace HaruP.Mixins
         public static Type GetPropType(object src, string propName)
         {
             return src.GetType().GetProperty(propName).PropertyType;
+        }
+
+        public static IRow CellFormulaShift(this IRow row,int offset)
+        {
+            const string formulaExp = @"([A-Za-z]+)([\d]+)";
+            foreach (ICell cell in row)
+            {
+                if (cell.CellType.Equals(CellType.Formula) && !string.IsNullOrEmpty(cell.CellFormula))
+                {
+                    var newFormulaString = Regex.Replace(cell.CellFormula, formulaExp,
+                        m => m.Groups[1].Value + (Convert.ToInt16(m.Groups[2].Value) + offset).ToString());
+                    cell.CellFormula = newFormulaString;
+                }
+            }
+            return row;
         }
     }
 }
