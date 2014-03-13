@@ -71,9 +71,13 @@ namespace HaruP
                     continue;
                 }
 
-                var row=isFirst && (offsetRow > 0)
-                    ? sheet.GetRow(t.Cell.RowIndex).CopyRowTo(t.Cell.RowIndex + offsetRow).CellFormulaShift(1)
-                    :sheet.GetRow(t.Cell.RowIndex + offsetRow);
+                var row = isFirst && (offsetRow > 0)
+//                    ? sheet.GetRow(t.Cell.RowIndex).CopyRowTo(t.Cell.RowIndex + offsetRow).CellFormulaShift(1)
+                    ? sheet.GetRow(t.Cell.RowIndex)
+                        .CopyRowToAdvance(t.Cell.RowIndex + offsetRow, excelMeta.RowHeight)
+                        .CellFormulaShift(1)
+                    : sheet.GetRow(t.Cell.RowIndex + offsetRow);
+
 
 
                 var cell = isFirst && (offsetColumn > 0)

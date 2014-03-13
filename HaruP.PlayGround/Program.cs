@@ -48,7 +48,7 @@ namespace HaruP.PlayGround
                     Company = "单位a",
                     Project = "项目a",
                     Town = "镇a",
-                    ProjectType = "项目类别a",
+                    ProjectType = "项目类别a678678678678567467tdy5du6ur65udr65yhdr56udr6u6ud6d6udc6u",
                     Amount = 1009,
                     Region = 9009,
                     Progress = "呵呵呵a",
@@ -84,28 +84,28 @@ namespace HaruP.PlayGround
                 Count = list.Count+" 个 呵呵"
             };
 
-            var extractor = new ExcelExtractor(@"template\t2.xls");
+            var extractor = new ExcelExtractor(@"template\t3.xls");
             extractor.PutData(list,new ExcelMeta
             {
-                SheetIndex = 1
+                SheetIndex = 0,
+                RowHeight = RowHeight.Inherit
             });
-            extractor.PutData(list2, new ExcelMeta
-            {
-                Namespace = "S",
-                SheetIndex = 1
-            });
+//            extractor.PutData(list2, new ExcelMeta
+//            {
+//                Namespace = "S",
+//                SheetIndex = 1
+//            });
             extractor.PutData(stat, new ExcelMeta
             {
-                SheetIndex = 1
+                SheetIndex = 0
             });
-            extractor.PutData(sstat, new ExcelMeta
-            {
-                Namespace = "S",
-                SheetIndex = 1
-            });
+//            extractor.PutData(sstat, new ExcelMeta
+//            {
+//                Namespace = "S",
+//                SheetIndex = 1
+//            });
 
-
-            extractor.Write("o2.xls");
+            extractor.Write("o3.xls");
             #endregion
 
         }

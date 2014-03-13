@@ -2,6 +2,7 @@
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
+using HaruP.Common;
 using NPOI.SS.Formula.Functions;
 using NPOI.SS.UserModel;
 
@@ -55,5 +56,23 @@ namespace HaruP.Mixins
             }
             return row;
         }
+
+        public static IRow CopyRowToAdvance(this IRow row,int rowNum, RowHeight rowHeight)
+        {
+            var newRow = row.CopyRowTo(rowNum);
+            switch (rowHeight)
+            {
+                case RowHeight.Auto:
+                    break;
+                case RowHeight.Inherit:
+                    newRow.Height = row.Height;
+                    newRow.HeightInPoints = row.HeightInPoints;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException("rowHeight");
+            }
+            return newRow;
+        }
+
     }
 }
