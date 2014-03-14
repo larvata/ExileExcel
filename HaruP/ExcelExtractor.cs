@@ -111,52 +111,30 @@ namespace HaruP
             }
         }
 
-
-        public void PutData(IList data)
-        {
-            // get tags from template
-            ParseTemplateMeta(this.excelMeta.SheetIndex);
-
-            // fill data
-            for (var i = 0; i < data.Count; i++)
-            {
-                WriteSingle(data[i], i);
-            }
-
-            // reset namespace
-            this.excelMeta.Namespace = string.Empty;
-        }
-
-        public void PutData(IList data, ExcelMeta meta)
-        {
-            this.excelMeta = meta ?? excelMeta;
-            PutData(data);
-
-        }
-
-        public void PutData(IList data, int sheetIndex)
-        {
-            this.excelMeta.SheetIndex=sheetIndex;
-            PutData(data);
-        }
-
-        public void PutData(IList data, string tagNamespace)
-        {
-            this.excelMeta.Namespace = tagNamespace;
-            PutData(data);
-        }
-
         public void PutData(object data)
         {
             // get tags from template
             ParseTemplateMeta(this.excelMeta.SheetIndex);
 
-            // fill data
-            WriteSingle(data, 0);
+            // determine type of [object data]
+            if (data is IEnumerable)
+            {
+                // fill data
+                var index = 0;
+                foreach (var d in (data as IEnumerable))
+                {
+                    WriteSingle(d, index);
+                    index++;
+                }
+            }
+            else
+            {
+                // fill data
+                WriteSingle(data, 0);
+            }
 
             // reset namespace
             this.excelMeta.Namespace = string.Empty;
-
         }
 
         public void PutData(object data, ExcelMeta meta)
