@@ -1,18 +1,19 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using NPOI.SS.UserModel;
+using System.Text;
 
 namespace HaruP.Common
 {
-    public class ExcelMeta
+    public class SheetMeta
     {
+        internal List<TagMeta> Tags { get; set; }
+
         public Orientation Orientation { get; set; }
 
         public RowHeight RowHeight { get; set; }
 
-        public int SheetIndex { get; set; }
-
-        private string _namespace=string.Empty;
+        private string _namespace = string.Empty;
         public string Namespace
         {
             get
@@ -28,13 +29,10 @@ namespace HaruP.Common
             }
         }
 
-        internal List<TagMeta> Tags { get; set; }
-
-        public ExcelMeta()
+        public SheetMeta()
         {
-            Tags = new List<TagMeta>();
+            Tags=new List<TagMeta>();
         }
-
     }
 
     public enum Orientation
@@ -48,14 +46,4 @@ namespace HaruP.Common
         Auto,
         Inherit
     }
-
-    public class TagMeta
-    {
-        public string TagId { get; set; }
-
-        public string TemplateText { get; set; }
-        public ICell Cell { get; set; }
-
-    }
-
 }
