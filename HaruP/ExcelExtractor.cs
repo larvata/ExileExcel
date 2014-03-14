@@ -71,9 +71,13 @@ namespace HaruP
                     continue;
                 }
 
-                var row=isFirst && (offsetRow > 0)
-                    ?sheet.GetRow(t.Cell.RowIndex).CopyRowTo(t.Cell.RowIndex + offsetRow)
-                    :sheet.GetRow(t.Cell.RowIndex + offsetRow);
+                var row = isFirst && (offsetRow > 0)
+//                    ? sheet.GetRow(t.Cell.RowIndex).CopyRowTo(t.Cell.RowIndex + offsetRow).CellFormulaShift(1)
+                    ? sheet.GetRow(t.Cell.RowIndex)
+                        .CopyRowToAdvance(t.Cell.RowIndex + offsetRow, excelMeta.RowHeight)
+                        .CellFormulaShift(1)
+                    : sheet.GetRow(t.Cell.RowIndex + offsetRow);
+
 
 
                 var cell = isFirst && (offsetColumn > 0)
@@ -107,48 +111,27 @@ namespace HaruP
             }
         }
 
-
-        public void PutData(IList data)
-        {
-            // get tags from template
-            ParseTemplateMeta(this.excelMeta.SheetIndex);
-
-            // fill data
-            for (var i = 0; i < data.Count; i++)
-            {
-                WriteSingle(data[i], i);
-            }
-
-            // reset namespace
-            this.excelMeta.Namespace = string.Empty;
-        }
-
-        public void PutData(IList data, ExcelMeta meta)
-        {
-            this.excelMeta = meta ?? excelMeta;
-            PutData(data);
-
-        }
-
-        public void PutData(IList data, int sheetIndex)
-        {
-            this.excelMeta.SheetIndex=sheetIndex;
-            PutData(data);
-        }
-
-        public void PutData(IList data, string tagNamespace)
-        {
-            this.excelMeta.Namespace = tagNamespace;
-            PutData(data);
-        }
-
         public void PutData(object data)
         {
             // get tags from template
             ParseTemplateMeta(this.excelMeta.SheetIndex);
 
-            // fill data
-            WriteSingle(data, 0);
+            // determine type of [object data]
+            if (data is IEnumerable)
+            {
+                // fill data
+                var index = 0;
+                foreach (var d in (data as IEnumerable))
+                {
+                    WriteSingle(d, index);
+                    index++;
+                }
+            }
+            else
+            {
+                // fill data
+                WriteSingle(data, 0);
+            }
 
             // reset namespace
             this.excelMeta.Namespace = string.Empty;
@@ -186,14 +169,19 @@ namespace HaruP
 
             #endregion
 
+            // recalculate formula
+            sheet.ForceFormulaRecalculation = true;
+
             // write to stream
             workbook.Write(stream);
         }
 
         public void Write(string filePath)
         {
+
             using (var fs=new FileStream(filePath, FileMode.Create))
             {
+
                 this.Write(fs);
             }
         }
@@ -201,6 +189,7 @@ namespace HaruP
         private void ParseTemplateMeta(int sheetIndex)
         {
             sheet = workbook.GetSheetAt(sheetIndex);
+
             for (var rowNum = 0; rowNum <= sheet.LastRowNum; rowNum++)
             {
                 var row = sheet.GetRow(rowNum);

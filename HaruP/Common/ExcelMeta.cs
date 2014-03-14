@@ -8,6 +8,8 @@ namespace HaruP.Common
     {
         public Orientation Orientation { get; set; }
 
+        public RowHeight RowHeight { get; set; }
+
         public int SheetIndex { get; set; }
 
         private string _namespace=string.Empty;
@@ -39,6 +41,12 @@ namespace HaruP.Common
     {
         Horizontal,
         Vertical
+    }
+
+    public enum RowHeight
+    {
+        Auto,
+        Inherit
     }
 
     public class TagMeta
