@@ -9,6 +9,7 @@ namespace HaruP.PlayGround
         {
 
             #region anonymous list
+
             var list = new List<dynamic>
             {
                 new
@@ -77,35 +78,32 @@ namespace HaruP.PlayGround
 
             var stat = new
             {
-                Count =  list.Count+" 个 呵呵"
+                Count = list.Count + " 个 呵呵"
             };
             var sstat = new
             {
-                Count = list.Count+" 个 呵呵"
+                Count = list.Count + " 个 呵呵"
             };
 
-            var extractor = new ExcelExtractor(@"template\t3.xls");
-            extractor.PutData(list,new ExcelMeta
+            var extractor = new ExcelExtractor(@"template\t2.xls");
+            var meta = new SheetMeta
             {
-                SheetIndex = 0,
                 RowHeight = RowHeight.Inherit
-            });
-//            extractor.PutData(list2, new ExcelMeta
-//            {
-//                Namespace = "S",
-//                SheetIndex = 1
-//            });
-            extractor.PutData(stat, new ExcelMeta
-            {
-                SheetIndex = 0
-            });
-//            extractor.PutData(sstat, new ExcelMeta
-//            {
-//                Namespace = "S",
-//                SheetIndex = 1
-//            });
+            };
 
+            var smeta = new SheetMeta
+            {
+                Namespace = "S",
+            };
+            extractor.ForkSheet(0, "lalala")
+                .PutData(list, meta)
+                .PutData(stat)
+                .PutData(list2, smeta)
+                .PutData(sstat);
+            extractor.GetSheet(0)
             extractor.Write("o3.xls");
+
+
             #endregion
 
         }
