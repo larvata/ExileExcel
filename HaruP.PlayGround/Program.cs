@@ -100,7 +100,7 @@ namespace HaruP.PlayGround
                 .PutData(stat)
                 .PutData(list2, smeta)
                 .PutData(sstat);
-            extractor.GetSheet(0)
+            extractor.GetSheet(0).Delete();
             extractor.Write("o3.xls");
 
 

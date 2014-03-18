@@ -16,7 +16,14 @@ namespace HaruP
         public Sheet(ISheet sheet)
         {
             this.sheet = sheet;
+            this.workbook = sheet.Workbook;
             this.sheetMeta = new SheetMeta();
+        }
+
+        public void Delete()
+        {
+            var index = this.workbook.GetSheetIndex(this.sheet);
+            this.workbook.RemoveSheetAt(index);
         }
 
         public Sheet PutData(object data)
