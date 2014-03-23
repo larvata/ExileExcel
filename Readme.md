@@ -9,7 +9,7 @@ Usage:
 -----------
 
 ```
-var wotaMixList = new List<dynamic>
+var list = new List<dynamic>
 {
     new
     {
@@ -29,10 +29,19 @@ var wotaMixList = new List<dynamic>
         Viber = "Viber2"
     }
 };
-var e = new ExcelExtractor();
-using (var fs = new FileStream("Vertical.xls", FileMode.Create))
+
+var stat = new
 {
-    e.ExcelWriteStream(wotaMixList, fs, @"template\templateVertical.xls");
-}
+    Count = "Count: " + list.Count;
+};
+
+var extractor = new ExcelExtractor(@"template.xls");
+
+extractor.ForkSheet(0, "sheet A")
+    .PutData(list)
+    .PutData(stat)
+
+extractor.Write("out.xls");
+
 ```
 [0]: https://npoi.codeplex.com/
