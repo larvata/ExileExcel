@@ -9,6 +9,7 @@ Usage:
 -----------
 
 ```
+// prepare data for output
 var list = new List<dynamic>
 {
     new
@@ -34,14 +35,18 @@ var stat = new
 {
     Count = "Count: " + list.Count;
 };
+```
 
-var extractor = new ExcelExtractor(@"template.xls");
+```
+var extractor = new HaruP.ExcelExtractor(@"template.xls");
 
+// create sheet from template sheet and put data
 extractor.ForkSheet(0, "sheet A")
     .PutData(list)
-    .PutData(stat)
+    .PutData(stat);
 
 extractor.Write("out.xls");
 
 ```
+
 [0]: https://npoi.codeplex.com/
