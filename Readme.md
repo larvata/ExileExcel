@@ -8,8 +8,12 @@ This project is based on [.NET NPOI 2.0][0].
 Usage:
 -----------
 
+#### build template excel file for output, put mustache.js style interpolate into your cell
 ```
-// prepare data for output
+{{value}} or {{=formula}}
+```
+#### prepare data for output
+```
 var list = new List<dynamic>
 {
     new
@@ -37,16 +41,15 @@ var stat = new
 };
 ```
 
+#### create sheet from template sheet and put data
 ```
 var extractor = new HaruP.ExcelExtractor(@"template.xls");
 
-// create sheet from template sheet and put data
 extractor.ForkSheet(0, "sheet A")
     .PutData(list)
     .PutData(stat);
 
 extractor.Write("out.xls");
-
 ```
 
 [0]: https://npoi.codeplex.com/
