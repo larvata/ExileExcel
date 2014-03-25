@@ -46,4 +46,10 @@ namespace HaruP.Common
         Auto,
         Inherit
     }
+
+    public enum TagType
+    {
+        Text,
+        Formula
+    }
 }

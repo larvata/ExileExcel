@@ -9,9 +9,11 @@ using HaruP.Mixins;
 using NPOI.SS.UserModel;
 
 namespace HaruP
-{
+{ 
     public class Sheet:Excel
     {
+        private const string Interpolate = @"{{([\w\.]+)}}";
+        private const string formula = @"{{=([\w\.]+)}}";
 
         public Sheet(ISheet sheet)
         {
@@ -79,15 +81,24 @@ namespace HaruP
 
                     var strVal = cell.StringCellValue;
 
-                    var tagId = Regex.Match(strVal, @"#{([\w\.]+)}").Groups[1].Value;
+                    var textTag = Regex.Match(strVal, Interpolate);
+                    var formulaTag = Regex.Match(strVal, formula);
 
-                    if (string.IsNullOrEmpty(tagId)) continue;
+                    //var currentTagType = string.IsNullOrEmpty(tagId) ? TagType.Text : TagType.Formula;
+
+
+
+                    if (textTag.Groups.Count == 1 && formulaTag.Groups.Count == 1)
+                    {
+                        continue;
+                    }
 
                     sheetMeta.Tags.Add(new TagMeta
                     {
                         Cell = cell,
-                        TagId = tagId,
-                        TemplateText = strVal
+                        TagId = textTag.Groups.Count == 1 ? formulaTag.Groups[1].ToString() : textTag.Groups[1].ToString(),
+                        TemplateText = strVal,
+                        TagType = textTag.Groups.Count == 1 ? TagType.Formula : TagType.Text
                     });
 
                 }
@@ -121,7 +132,6 @@ namespace HaruP
                 }
 
                 var row = isFirst && (offsetRow > 0)
-                    //                    ? sheet.GetRow(t.Cell.RowIndex).CopyRowTo(t.Cell.RowIndex + offsetRow).CellFormulaShift(1)
                     ? sheet.GetRow(t.Cell.RowIndex)
                         .CopyRowToAdvance(t.Cell.RowIndex + offsetRow, sheetMeta.RowHeight)
                         .CellFormulaShift(1)
@@ -135,22 +145,16 @@ namespace HaruP
 
                 isFirst = false;
 
-                // fill value
-                if (cellValue == null)
+                switch (t.TagType)
                 {
-                    cell.SetCellValue(string.Empty);
-                }
-                else if (cellValue is DateTime)
-                {
-                    cell.SetCellValue((DateTime)cellValue);
-                }
-                else if (cellValue is double || cellValue is float || cellValue is int)
-                {
-                    cell.SetCellValue(Convert.ToDouble(cellValue));
-                }
-                else
-                {
-                    cell.SetCellValue(cellValue.ToString());
+                    case TagType.Text:
+                        FillCellValue(cellValue, cell);
+                        break;
+                    case TagType.Formula:
+                        FillCellFormula(cellValue, cell);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
                 }
 
                 // copy cell format to new created
@@ -160,5 +164,37 @@ namespace HaruP
             }
         }
 
+        private static void FillCellFormula(object cellValue, ICell cell)
+        {
+            if (cellValue==null)
+            {
+                cell.SetCellValue(string.Empty);
+            }
+            else
+            {
+                cell.CellFormula = cellValue.ToString();
+            }
+        }
+
+        private static void FillCellValue(object cellValue, ICell cell)
+        {
+            // fill value
+            if (cellValue == null)
+            {
+                cell.SetCellValue(string.Empty);
+            }
+            else if (cellValue is DateTime)
+            {
+                cell.SetCellValue((DateTime) cellValue);
+            }
+            else if (cellValue is double || cellValue is float || cellValue is int)
+            {
+                cell.SetCellValue(Convert.ToDouble(cellValue));
+            }
+            else
+            {
+                cell.SetCellValue(cellValue.ToString());
+            }
+        }
     }
 }
