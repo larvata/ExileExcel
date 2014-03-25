@@ -13,5 +13,7 @@ namespace HaruP.Common
         public string TemplateText { get; set; }
         public ICell Cell { get; set; }
 
+        public TagType TagType { get; set; }
+
     }
 }

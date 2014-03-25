@@ -24,6 +24,7 @@ namespace HaruP.PlayGround
                     Progress = "呵呵呵",
                     Target = "哈哈哈",
                     Month1 = "一月内容",
+                    formula="(1+2)"
                 }
                 ,
                 new
@@ -38,6 +39,7 @@ namespace HaruP.PlayGround
                     Progress = "呵呵呵2",
                     Target = "哈哈哈2",
                     Month1 = "一月内容2",
+                    formula="(3+4)"
                 }
             };
 
