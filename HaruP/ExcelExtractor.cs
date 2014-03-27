@@ -41,11 +41,18 @@ namespace HaruP
 
         public Sheet ForkSheet(int sheetIndex, string forkedSheetName)
         {
-            workbook.SetSheetHidden(sheetIndex,1);
+           
 
             this.sheet = workbook.CloneSheet(sheetIndex);
             var index = this.workbook.GetSheetIndex(this.sheet);
             this.workbook.SetSheetName(index, forkedSheetName);
+
+            workbook.SetSheetHidden(sheetIndex, 1);
+            if (workbook.ActiveSheetIndex == sheetIndex)
+            {
+                workbook.SetActiveSheet(index);
+            }
+
             return new Sheet(this.sheet);
         }
 

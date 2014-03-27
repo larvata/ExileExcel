@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using HaruP.Common;
 using HaruP.Mixins;
@@ -13,7 +11,7 @@ namespace HaruP
     public class Sheet:Excel
     {
         private const string Interpolate = @"{{([\w\.]+)}}";
-        private const string formula = @"{{=([\w\.]+)}}";
+        private const string Formula = @"{{=([\w\.]+)}}";
 
         public Sheet(ISheet sheet)
         {
@@ -51,7 +49,7 @@ namespace HaruP
             }
 
             // reset namespace
-            this.sheetMeta.Namespace = string.Empty;
+//            this.sheetMeta.Namespace = string.Empty;
 
             return this;
         }
@@ -81,25 +79,31 @@ namespace HaruP
 
                     var strVal = cell.StringCellValue;
 
-                    var textTag = Regex.Match(strVal, Interpolate);
-                    var formulaTag = Regex.Match(strVal, formula);
-
-                    //var currentTagType = string.IsNullOrEmpty(tagId) ? TagType.Text : TagType.Formula;
-
-
-
-                    if (textTag.Groups.Count == 1 && formulaTag.Groups.Count == 1)
+                    var matchText = Regex.Match(strVal, Interpolate);
+                    while (matchText.Success)
                     {
-                        continue;
+                        sheetMeta.Tags.Add(new TagMeta
+                        {
+                            Cell = cell,
+                            TagId = matchText.Groups[1].ToString(),
+                            TemplateText = matchText.Groups[0].ToString(),
+                            TagType = TagType.Text
+                        });    
+                        matchText = matchText.NextMatch();
                     }
 
-                    sheetMeta.Tags.Add(new TagMeta
+                    var matchFormula = Regex.Match(strVal, Formula);
+                    while (matchFormula.Success)
                     {
-                        Cell = cell,
-                        TagId = textTag.Groups.Count == 1 ? formulaTag.Groups[1].ToString() : textTag.Groups[1].ToString(),
-                        TemplateText = strVal,
-                        TagType = textTag.Groups.Count == 1 ? TagType.Formula : TagType.Text
-                    });
+                        sheetMeta.Tags.Add(new TagMeta
+                        {
+                            Cell = cell,
+                            TagId = matchFormula.Groups[1].ToString(),
+                            TemplateText = matchFormula.Groups[0].ToString(),
+                            TagType = TagType.Formula
+                        });
+                        matchFormula = matchFormula.NextMatch();
+                    }
 
                 }
             }
@@ -137,8 +141,6 @@ namespace HaruP
                         .CellFormulaShift(1)
                     : sheet.GetRow(t.Cell.RowIndex + offsetRow);
 
-
-
                 var cell = isFirst && (offsetColumn > 0)
                     ? row.GetCell(t.Cell.ColumnIndex).CopyCellTo(t.Cell.ColumnIndex + offsetColumn)
                     : row.GetCell(t.Cell.ColumnIndex + offsetColumn);
@@ -148,7 +150,7 @@ namespace HaruP
                 switch (t.TagType)
                 {
                     case TagType.Text:
-                        FillCellValue(cellValue, cell);
+                        FillCellValue(cellValue, cell,t.TemplateText);
                         break;
                     case TagType.Formula:
                         FillCellFormula(cellValue, cell);
@@ -176,25 +178,11 @@ namespace HaruP
             }
         }
 
-        private static void FillCellValue(object cellValue, ICell cell)
+        private static void FillCellValue(object cellValue, ICell cell,string templateText)
         {
             // fill value
-            if (cellValue == null)
-            {
-                cell.SetCellValue(string.Empty);
-            }
-            else if (cellValue is DateTime)
-            {
-                cell.SetCellValue((DateTime) cellValue);
-            }
-            else if (cellValue is double || cellValue is float || cellValue is int)
-            {
-                cell.SetCellValue(Convert.ToDouble(cellValue));
-            }
-            else
-            {
-                cell.SetCellValue(cellValue.ToString());
-            }
+            var currentCellValue = cell.StringCellValue;
+            cell.SetCellValue(currentCellValue.Replace(templateText,(cellValue??string.Empty).ToString()));
         }
     }
 }
