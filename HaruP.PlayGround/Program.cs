@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using HaruP.Common;
 
 namespace HaruP.PlayGround
@@ -80,11 +81,13 @@ namespace HaruP.PlayGround
 
             var stat = new
             {
-                Count = list.Count + " 个 呵呵"
+                Count = list.Count,
+                Count2=9
             };
             var sstat = new
             {
-                Count = list.Count + " 个 呵呵"
+                Count = list.Count ,
+                Count2=8
             };
 
             var extractor = new ExcelExtractor(@"template\t2.xls");
@@ -97,16 +100,20 @@ namespace HaruP.PlayGround
             {
                 Namespace = "S",
             };
+
             extractor.ForkSheet(0, "lalala")
-                .PutData(list, meta)
-                .PutData(stat)
                 .PutData(list2, smeta)
-                .PutData(sstat);
-            extractor.GetSheet(0).Delete();
+                .PutData(sstat, smeta)
+                .PutData(list, meta)
+                .PutData(stat);
+
+
             extractor.Write("o3.xls");
 
 
             #endregion
+
+
 
         }
     }

@@ -1,14 +1,5 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Runtime.Remoting.Messaging;
-using System.Text.RegularExpressions;
-
-using HaruP.Mixins;
-using NPOI.HSSF.Record.PivotTable;
-using NPOI.OpenXml4Net.Exceptions;
 using NPOI.SS.Formula;
 using NPOI.SS.UserModel;
 
@@ -41,11 +32,18 @@ namespace HaruP
 
         public Sheet ForkSheet(int sheetIndex, string forkedSheetName)
         {
-            workbook.SetSheetHidden(sheetIndex,1);
+           
 
             this.sheet = workbook.CloneSheet(sheetIndex);
             var index = this.workbook.GetSheetIndex(this.sheet);
             this.workbook.SetSheetName(index, forkedSheetName);
+
+            workbook.SetSheetHidden(sheetIndex, 1);
+            if (workbook.ActiveSheetIndex == sheetIndex)
+            {
+                workbook.SetActiveSheet(index);
+            }
+
             return new Sheet(this.sheet);
         }
 
