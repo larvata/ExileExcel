@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using HaruP.Common;
@@ -12,6 +13,7 @@ namespace HaruP
     {
         private const string Interpolate = @"{{([\w\.]+)}}";
         private const string Formula = @"{{=([\w\.]+)}}";
+//        private IRow templateRow;
 
         public Sheet(ISheet sheet)
         {
@@ -26,6 +28,18 @@ namespace HaruP
             this.workbook.RemoveSheetAt(index);
         }
 
+//        public Sheet RemoveRow(int rowNum)
+//        {
+//            //sheet.RemoveRow(sheet.GetRow(rowNum));
+//            return this;
+//        }
+//
+//        public Sheet RemoveRowBreak(int rowNum)
+//        {
+//            sheet.RemoveRowBreak(rowNum);
+//            return this;
+//        }
+
         public Sheet PutData(object data)
         {
             // get tags from template
@@ -34,19 +48,36 @@ namespace HaruP
             // determine type of [object data]
             if (data is IEnumerable)
             {
-                // fill data
-                var index = 0;
-                foreach (var d in (data as IEnumerable))
+
+                // cast to list for get length
+                var list=(data as IEnumerable).Cast<Object>().ToArray();
+
+                for (var i = 0; i < list.Length; i++)
                 {
-                    WriteSingle(d, index);
-                    index++;
+                    WriteSingle(list[i], i,(i==list.Length-1));
                 }
+
             }
             else
             {
                 // fill data
                 WriteSingle(data, 0);
             }
+
+            switch (sheetMeta.Orientation)
+            {
+                case Orientation.Horizontal:
+//                    sheet.RemoveRow(templateRow);
+                 
+//                    templateRow = null;
+                    break;
+                case Orientation.Vertical:
+                    // todo not implemented
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+            
 
             // reset namespace
 //            this.sheetMeta.Namespace = string.Empty;
@@ -109,13 +140,13 @@ namespace HaruP
             }
         }
 
-        private void WriteSingle(Object singleData, int offset)
+        private void WriteSingle(Object singleData, int offset,bool isLastObject=true)
         {
 
             var offsetRow = sheetMeta.Orientation == Orientation.Horizontal ? offset : 0;
             var offsetColumn = sheetMeta.Orientation == Orientation.Vertical ? offset : 0;
 
-            var isFirst = true;
+            var isFirstCell = true;
             var matchedTags = string.IsNullOrEmpty(sheetMeta.Namespace)
                 ? sheetMeta.Tags.Where(t => !t.TagId.Contains(".")).ToList()
                 : sheetMeta.Tags.Where(t => t.TagId.StartsWith(sheetMeta.Namespace)).ToList();
@@ -135,17 +166,59 @@ namespace HaruP
                     continue;
                 }
 
-                var row = isFirst && (offsetRow > 0)
-                    ? sheet.GetRow(t.Cell.RowIndex)
-                        .CopyRowToAdvance(t.Cell.RowIndex + offsetRow, sheetMeta.RowHeight)
-                        .CellFormulaShift(1)
-                    : sheet.GetRow(t.Cell.RowIndex + offsetRow);
+//                var row = isFirst //&& (offsetRow > 0)
+//                    ? sheet.GetRow(t.Cell.RowIndex+offsetRow)
+//                        .CopyRowToAdvance(t.Cell.RowIndex+1, sheetMeta.RowHeight)
+//                        .CellFormulaShift(1)
+//                    : sheet.GetRow(t.Cell.RowIndex + offsetRow);
 
-                var cell = isFirst && (offsetColumn > 0)
+                IRow row;
+                if (isFirstCell && !isLastObject)
+                {
+                    row = sheet.GetRow(t.Cell.RowIndex + offsetRow)
+                        .CopyRowToAdvance(t.Cell.RowIndex + offsetRow + 1, sheetMeta.RowHeight)
+                        .CellFormulaShift(1);
+                }
+                else
+                {
+                    row = sheet.GetRow(t.Cell.RowIndex + offsetRow);
+                }
+
+//                if (isFirstCell && isLastObject)
+//                {
+//                    row = sheet.GetRow(t.Cell.RowIndex + offsetRow);
+//                }
+//                else
+//                {
+//                    row = sheet.GetRow(t.Cell.RowIndex + offsetRow)
+//                        .CopyRowToAdvance(t.Cell.RowIndex + offsetRow + 1, sheetMeta.RowHeight)
+//                        .CellFormulaShift(1);
+//                    templateRow = sheet.GetRow(t.Cell.RowIndex + offsetRow + 1);
+//                }
+
+                // todo check code
+                var cell = isFirstCell && (offsetColumn > 0)
                     ? row.GetCell(t.Cell.ColumnIndex).CopyCellTo(t.Cell.ColumnIndex + offsetColumn)
                     : row.GetCell(t.Cell.ColumnIndex + offsetColumn);
 
-                isFirst = false;
+                isFirstCell = false;
+
+                                // save template row 
+//                switch (sheetMeta.Orientation)
+//                {
+//                    case Orientation.Horizontal:
+//                        if (templateRow==null)
+//                        {
+//                            
+////                            sheet.RemoveRow(templateRow);
+//                        }
+//                        break;
+//                    case Orientation.Vertical:
+//                        // todo not implemented
+//                        break;
+//                    default:
+//                        throw new ArgumentOutOfRangeException();
+//                }
 
                 switch (t.TagType)
                 {

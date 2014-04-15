@@ -99,12 +99,15 @@ namespace HaruP.PlayGround
             {
                 Namespace = "S",
             };
-            extractor.ForkSheet(0, "lalala")
+            var sheet=extractor.ForkSheet(0, "lalala")
 
                 .PutData(list2, smeta)
                 .PutData(sstat, smeta)
-                                .PutData(list, meta)
+                .PutData(list, meta)
                 .PutData(stat);
+                ;
+
+//            extractor.GetSheet(1).RemoveRow(0).RemoveRowBreak(0);
 
             extractor.Write("o3.xls");
 

@@ -71,7 +71,7 @@ namespace HaruP.Mixins
                 default:
                     throw new ArgumentOutOfRangeException("rowHeight");
             }
-            return newRow;
+            return row;
         }
 
     }
