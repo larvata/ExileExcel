@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using HaruP.Common;
@@ -13,7 +12,6 @@ namespace HaruP
     {
         private const string Interpolate = @"{{([\w\.]+)}}";
         private const string Formula = @"{{=([\w\.]+)}}";
-//        private IRow templateRow;
 
         public Sheet(ISheet sheet)
         {
@@ -28,18 +26,6 @@ namespace HaruP
             this.workbook.RemoveSheetAt(index);
         }
 
-//        public Sheet RemoveRow(int rowNum)
-//        {
-//            //sheet.RemoveRow(sheet.GetRow(rowNum));
-//            return this;
-//        }
-//
-//        public Sheet RemoveRowBreak(int rowNum)
-//        {
-//            sheet.RemoveRowBreak(rowNum);
-//            return this;
-//        }
-
         public Sheet PutData(object data)
         {
             // get tags from template
@@ -48,7 +34,6 @@ namespace HaruP
             // determine type of [object data]
             if (data is IEnumerable)
             {
-
                 // cast to list for get length
                 var list=(data as IEnumerable).Cast<Object>().ToArray();
 
@@ -56,32 +41,13 @@ namespace HaruP
                 {
                     WriteSingle(list[i], i,(i==list.Length-1));
                 }
-
             }
             else
             {
                 // fill data
                 WriteSingle(data, 0);
             }
-
-            switch (sheetMeta.Orientation)
-            {
-                case Orientation.Horizontal:
-//                    sheet.RemoveRow(templateRow);
-                 
-//                    templateRow = null;
-                    break;
-                case Orientation.Vertical:
-                    // todo not implemented
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
             
-
-            // reset namespace
-//            this.sheetMeta.Namespace = string.Empty;
-
             return this;
         }
 
@@ -94,7 +60,6 @@ namespace HaruP
 
         private void ParseTemplateMeta()
         {
-
             for (var rowNum = 0; rowNum <= sheet.LastRowNum; rowNum++)
             {
                 var row = sheet.GetRow(rowNum);
@@ -142,7 +107,6 @@ namespace HaruP
 
         private void WriteSingle(Object singleData, int offset,bool isLastObject=true)
         {
-
             var offsetRow = sheetMeta.Orientation == Orientation.Horizontal ? offset : 0;
             var offsetColumn = sheetMeta.Orientation == Orientation.Vertical ? offset : 0;
 
@@ -150,7 +114,6 @@ namespace HaruP
             var matchedTags = string.IsNullOrEmpty(sheetMeta.Namespace)
                 ? sheetMeta.Tags.Where(t => !t.TagId.Contains(".")).ToList()
                 : sheetMeta.Tags.Where(t => t.TagId.StartsWith(sheetMeta.Namespace)).ToList();
-
 
             foreach (var t in matchedTags)
             {
@@ -166,12 +129,6 @@ namespace HaruP
                     continue;
                 }
 
-//                var row = isFirst //&& (offsetRow > 0)
-//                    ? sheet.GetRow(t.Cell.RowIndex+offsetRow)
-//                        .CopyRowToAdvance(t.Cell.RowIndex+1, sheetMeta.RowHeight)
-//                        .CellFormulaShift(1)
-//                    : sheet.GetRow(t.Cell.RowIndex + offsetRow);
-
                 IRow row;
                 if (isFirstCell && !isLastObject)
                 {
@@ -184,41 +141,12 @@ namespace HaruP
                     row = sheet.GetRow(t.Cell.RowIndex + offsetRow);
                 }
 
-//                if (isFirstCell && isLastObject)
-//                {
-//                    row = sheet.GetRow(t.Cell.RowIndex + offsetRow);
-//                }
-//                else
-//                {
-//                    row = sheet.GetRow(t.Cell.RowIndex + offsetRow)
-//                        .CopyRowToAdvance(t.Cell.RowIndex + offsetRow + 1, sheetMeta.RowHeight)
-//                        .CellFormulaShift(1);
-//                    templateRow = sheet.GetRow(t.Cell.RowIndex + offsetRow + 1);
-//                }
-
                 // todo check code
                 var cell = isFirstCell && (offsetColumn > 0)
                     ? row.GetCell(t.Cell.ColumnIndex).CopyCellTo(t.Cell.ColumnIndex + offsetColumn)
                     : row.GetCell(t.Cell.ColumnIndex + offsetColumn);
 
                 isFirstCell = false;
-
-                                // save template row 
-//                switch (sheetMeta.Orientation)
-//                {
-//                    case Orientation.Horizontal:
-//                        if (templateRow==null)
-//                        {
-//                            
-////                            sheet.RemoveRow(templateRow);
-//                        }
-//                        break;
-//                    case Orientation.Vertical:
-//                        // todo not implemented
-//                        break;
-//                    default:
-//                        throw new ArgumentOutOfRangeException();
-//                }
 
                 switch (t.TagType)
                 {
@@ -234,7 +162,6 @@ namespace HaruP
 
                 // copy cell format to new created
                 cell.CellStyle = t.Cell.CellStyle;
-
                 sheet.SetColumnWidth(cell.ColumnIndex, sheet.GetColumnWidth(t.Cell.ColumnIndex));
             }
         }
