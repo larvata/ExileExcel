@@ -65,8 +65,11 @@ namespace HaruP
             #endregion
 
             // recalculate formula
-            sheet.ForceFormulaRecalculation = true;
-
+            if (sheet!=null)
+            {
+               sheet.ForceFormulaRecalculation = true; 
+            }
+           
             // write to stream
             workbook.Write(stream);
         }
