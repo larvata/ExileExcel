@@ -1,9 +1,15 @@
 HaruP
 ==========
 
-HaruP is an library aim for output Microsoft Excel file with dead easy ways.
-This project is based on [.NET NPOI 2.0][0].
+HaruP is an library aim for output Microsoft Excel file with dead-easy way.
+This project is based on [.NET NPOI][0].
 
+
+Please chekout branch dotnet20-with-LinqBridge when you are using .NET 2.0
+
+```
+git checkout dotnet20-with-LinqBridge
+```
 
 Usage:
 -----------
@@ -11,14 +17,21 @@ Usage:
 build template excel file for output, put mustache.js style interpolate into your cell
 
 #### Template Syntax
+
+Cell value:
 ```
-// cell value
 {{PropertyName}}
-
-// partial cell value
+```
+Cell value with namespace:
+```
+{{namespace.PropertyName}}
+```
+Partial cell value:
+```
 Today is {{PropertyName}
-
-// Or you can use formula
+```
+Or you can use formula:
+```
 {{=Formula}}
 ```
 #### Data structure
@@ -27,41 +40,19 @@ Today is {{PropertyName}
 - If datas with same property name, use namespace
 
 ```
-var list = new List<dynamic>
-{
-    new
-    {
-        Id = 1,
+var list = new List<dynamic>{
+    new{
         Date = DateTime.Now,
-        Formula = "A1+B1"
-    },
-    new
-    {
-        Id = 2,
+        Formula = "A1+B1"},
+    new{
         Date = DateTime.Now
-        Formula = "A2+B2"
-    }
-};
+        Formula = "A2+B2"}};
 
-var list2 = new List<dynamic>
-{
-    new
-    {
-        Id = 1,
-        Date = DateTime.Now,
-    },
-    new
-    {
-        Id = 2,
-        Date = DateTime.Now
-    }
-};
-
-// namespace define
-var meta = new SheetMeta
-{
-    Namespace = "S",
-};
+var list2 = new List<dynamic>{
+    new{
+        Date = DateTime.Now},
+    new{
+        Date = DateTime.Now}};
 ```
 
 #### Export
@@ -72,7 +63,7 @@ extractor.ForkSheet(0, "sheet A")
     // input first list
     .PutData(list)
     // input second list with namespace:S
-    .PutData(list2,meta);
+    .PutData(list2, new SheetMeta{ Namespace = "S"});
 
 extractor.Write("out.xls");
 ```
