@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using HaruP.Common;
+using HaruP.Extractor;
+using HaruP.Parser;
 
 namespace HaruP.PlayGround
 {
@@ -8,7 +10,7 @@ namespace HaruP.PlayGround
     {
         private static void Main(string[] args)
         {
-
+            /*
             #region anonymous list
 
             var list = new List<dynamic>
@@ -89,7 +91,7 @@ namespace HaruP.PlayGround
                 Count = list.Count ,
                 Count2=8
             };
-
+            
             var extractor = new ExcelExtractor(@"template\t2.xls");
             var meta = new SheetMeta
             {
@@ -112,8 +114,12 @@ namespace HaruP.PlayGround
 
 
             #endregion
+            */
 
+            var parser = new ExcelParser();
+            var list=parser.Parse(@"template\forParse.xls");
 
+            Console.WriteLine(list.Count);
 
         }
     }
