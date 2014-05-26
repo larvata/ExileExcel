@@ -35,9 +35,9 @@ Or you can use formula:
 {{=Formula}}
 ```
 #### Data structure
-- HaruP can handle data implement IEnumerable.
+- HaruP can handle data which implemented IEnumerable.
 - Or create it use dynamic type (.net 4.0 only)
-- If datas with same property name, use namespace
+- If data with same property name, use namespace
 
 ```
 var list = new List<dynamic>{
