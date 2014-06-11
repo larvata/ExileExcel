@@ -46,6 +46,11 @@ namespace HaruP.Parser
 
             var retList = new List<IBaseSheetData>();
 
+            if (matchedRawDataObject==null)
+            {
+                return retList;
+            }
+
             // get body
             while (rows.MoveNext())
             {
