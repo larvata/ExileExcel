@@ -40,10 +40,6 @@ namespace HaruP.Parser
 
             var list = Utils.GetEnumerableOfType<IBaseSheetData>();
 
-            var a1 = list.First().IsKeyPairMatch(inputKeyPair);
-            var a2 = list.Last().IsKeyPairMatch(inputKeyPair);
-            var reseut = list.Where(r => r.IsKeyPairMatch(inputKeyPair)).ToList();
-
             foreach (var rawDataObject in list.Where(r => r.IsKeyPairMatch(inputKeyPair)))
             {
                 matchedRawDataObject = rawDataObject;
