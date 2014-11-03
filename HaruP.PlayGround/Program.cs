@@ -116,8 +116,8 @@ namespace HaruP.PlayGround
             #endregion
             */
 
-            var parser = new ExcelParser();
-            var list=parser.Parse(@"template\forParse.xls");
+            var parser = new ExcelParser(@"template\forParse.xls");
+            var list = parser.GetSheet(0).Parse();
 
             Console.WriteLine(list.Count);
 

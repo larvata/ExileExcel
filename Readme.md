@@ -5,7 +5,7 @@ HaruP is an library aim for output Microsoft Excel file with dead-easy way.
 This project is based on [.NET NPOI][0].
 
 
-Please chekout branch dotnet20-with-LinqBridge when you are using .NET 2.0
+Please chekout branch dotnet20-with-LinqBridge if you are using .NET 2.0
 
 ```
 git checkout dotnet20-with-LinqBridge
@@ -14,6 +14,7 @@ git checkout dotnet20-with-LinqBridge
 Usage:
 -----------
 
+## Extractor
 build template excel file for output, put mustache.js style interpolate into your cell
 
 #### Template Syntax
@@ -67,5 +68,17 @@ extractor.ForkSheet(0, "sheet A")
 
 extractor.Write("out.xls");
 ```
+
+## Parser
+
+```
+var parser = new ExcelParser(@"forImport.xls");
+
+foreach (var sheets in parser.GetSheets())
+{
+    var list = sheets.Parse();
+}
+```
+
 
 [0]: https://npoi.codeplex.com/

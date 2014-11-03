@@ -4,86 +4,46 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using HaruP.Common;
+using HaruP.Extractor;
 using NPOI.SS.UserModel;
 
 namespace HaruP.Parser
 {
-    public class ExcelParser
+    public class ExcelParser:Excel
     {
         
-        public string Description { get; set; }
+        
 
-        public List<IBaseSheetData> Parse(string filePath)
+
+        public ExcelParser(string filePath)
         {
-            IWorkbook workbook;
+//            IWorkbook workbook;
             using (var file = new FileStream(filePath, FileMode.Open, FileAccess.Read))
             {
-                workbook = WorkbookFactory.Create(file);
+                this.workbook = WorkbookFactory.Create(file);
             }
-            var worksheet = workbook.GetSheetAt(0);
-            var rows = worksheet.GetRowEnumerator();
+//            var worksheet = workbook.GetSheetAt(0);
+        }
 
-            IBaseSheetData matchedRawDataObject = null;
-            var inputKeyPair = new Dictionary<int, string>();
+//        public List<IBaseSheetData> Parse()
+//        {
+//
+//
+//        }
 
+        public Sheet GetSheet(int sheetIndex)
+        {
+            this.sheet = workbook.GetSheetAt(sheetIndex);
+            return new Sheet(this.sheet);
+        }
 
-
-            // get header
-            rows.MoveNext();
-            var header = (IRow)rows.Current;
-            for (int i = 0; i < header.Cells.Count; i++)
+        public IEnumerable<Sheet> GetSheets()
+        {
+            for (var i = 0; i < this.workbook.NumberOfSheets; i++)
             {
-                inputKeyPair.Add(i, header.Cells[i].StringCellValue);
+                var currentSheet = workbook.GetSheetAt(i);
+                yield return new Sheet(currentSheet);
             }
-
-            var list = Utils.GetEnumerableOfType<IBaseSheetData>();
-            foreach (var rawDataObject in list.Where(r => r.IsKeyPairMatch(inputKeyPair)))
-            {
-                matchedRawDataObject = rawDataObject;
-                Description = matchedRawDataObject.GetClassDescription();
-                break;
-            }
-
-            var retList = new List<IBaseSheetData>();
-
-            if (matchedRawDataObject==null)
-            {
-                return retList;
-            }
-
-            // get body
-            while (rows.MoveNext())
-            {
-                var tmpRawData = (IBaseSheetData)Activator.CreateInstance(matchedRawDataObject.GetType());
-                {
-                    var row = (IRow)rows.Current;
-                    foreach (var p in tmpRawData.GetNameAttributePair())
-                    {
-                        var index = inputKeyPair.FirstOrDefault(k => k.Value == p.Value).Key;
-                        var prop = tmpRawData.GetType()
-                                             .GetProperty(p.Key,
-                                                          BindingFlags.NonPublic | BindingFlags.Public |
-                                                          BindingFlags.Instance);
-                        var cell = row.GetCell(index);
-
-                        if (null == prop || !prop.CanWrite || null == cell) continue;
-
-                        if (prop.PropertyType == typeof(int))
-                        {
-                            prop.SetValue(tmpRawData, Convert.ToInt32(cell.ToString()), null);
-                        }
-                        else
-                        {
-                            prop.SetValue(tmpRawData, cell.ToString(), null);
-                        }
-                    }
-                    retList.Add(tmpRawData);
-                }
-
-            }
-
-
-            return retList;
         }
     }
 }
